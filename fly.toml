@@ -1,7 +1,7 @@
-app = "spring-template"
+app = "mycircular-api"
 
 # [build]
-#   image = "udlepssoftarch/spring-template:latest"
+#   image = "udlepssoftarch/mycircular-api:latest"
 
 [env]
     JAVA_OPTS = "-XX:MaxRAM=70m"

@@ -1,15 +1,60 @@
 @startuml
 
-class User extends UriEntity implements UserDetails {
+class Announcement {
+    name: String
+    description: String
+    price: Decimal
+}
+
+class Transaction {
+    status: Enum
+    when: DateTime
+    price: Decimal
+}
+Transaction "0..1" --up-- "1" Announcement : about >
+Transaction "*" --down-- "1" User : seller >
+Transaction "*" --down-- "1" User : buyer >
+class Admin extends User {}
+
+class Message {
+  when: DateTime
+  text: String
+}
+Message "*" --up-- "1" Announcement : for >
+Message "*" --down-- "1" User : author >
+
+class User {
   username : String
   password : String
   email : String
+  tokens: Decimal
 }
 
-class UriEntity {
-  uri : String
-}
+class Offer extends Announcement
+Offer "*" --right-- "1" User : offerer >
 
-User "1" --right-- "*" Resource : owner <
+class CounterOffer extends Offer
+CounterOffer "*" --up-- "1" Offer : counters >
+
+class ProductOffer extends Offer {}
+class ServiceOffer extends Offer {}
+
+class Request extends Announcement
+Request "*" --left-- "1" User : requester >
+
+class ProductRequest extends Request {}
+class ServiceRequest extends Request {}
+
+class CounterRequest extends Request
+CounterRequest "*" --up-- "1" Request : counters >
+
+class Review {
+    when: DateTime
+    stars: Integer
+    message: String
+}
+Review "*" --up-- "1" User : author >
+Review "*" --up-- "1" User : about >
+
 
 @enduml

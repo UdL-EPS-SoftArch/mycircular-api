@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>cat.udl.eps.softarch</groupId>
-	<artifactId>spring-template</artifactId>
+	<artifactId>mycircular-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-template</name>
-	<description>Demo project for Spring Boot</description>
+	<name>mycircular-api</name>
+	<description>MyCircular API</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
