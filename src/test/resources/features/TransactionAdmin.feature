@@ -7,7 +7,9 @@ Feature: AdminTransaction
     Given I login as "demo" with password "password"
     And There is no transaction created
     When I Create a new Transaction
+    Then I put the Transaction price "20.00"
     Then There is a transaction created
+    And Now the Transaction price is "20.00"
 
   Scenario: New transaction status is INITIALIZED
     Given I login as "demo" with password "password"

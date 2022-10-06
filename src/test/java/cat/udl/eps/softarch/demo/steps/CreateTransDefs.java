@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 
+import java.math.BigDecimal;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -42,11 +44,23 @@ public class CreateTransDefs {
                 .andDo(print());
     }
 
+    @Then("I put the Transaction price {string}")
+    public void iModifyTheTransactionPrice(String price) throws Exception {
+        Transaction transaction = transactionRepository.findById(1L).get();
+        BigDecimal priceDecimal = new BigDecimal(price);
+        transaction.setPrice(priceDecimal);
+        transactionRepository.save(transaction);
+    }
     @Then("There is a transaction created")
     public void thereIsATransactionCreated() {
         Assert.assertEquals(1, transactionRepository.count());
     }
-
+    @And("Now the Transaction price is {string}")
+    public void iVerifyThePrice(String price) throws Exception {
+        Transaction transaction = transactionRepository.findById(1L).get();
+        BigDecimal priceDecimal = new BigDecimal(price);
+        Assert.assertEquals(transaction.getPrice(),priceDecimal);
+    }
     @Then("The transaction status is {string}")
     public void theTransactionStatusIs(String status) {
         Transaction transaction = transactionRepository.findById(1L).get();
