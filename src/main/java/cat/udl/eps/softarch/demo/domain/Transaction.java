@@ -1,31 +1,32 @@
 package cat.udl.eps.softarch.demo.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
+import javax.validation.constraints.NotBlank;
 import java.time.ZonedDateTime;
-import java.util.Collection;
 
 @Entity
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Transaction extends UriEntity<Long> {
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
-    private Long identifyer;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    private ZonedDateTime creationDate;
 
-    private ZonedDateTime dateTime;
-
-    private BigDecimal price;
-
-    public enum StatusTypes{ACTIVE,INPROGRESS,CLOSED}
-
+    public enum StatusTypes {INITIALIZED, IN_PROGRESS, CLOSED;}
     private StatusTypes status;
-    /**
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    /*
     @ManyToOne
     private User buyer;
 
@@ -33,20 +34,6 @@ public class Transaction extends UriEntity<Long> {
     private User seller;
 
     @OneToOne
-    private Announcement announcementAbout;*/
-
-    @Override
-    public Long getId(){ return identifyer; }
-
-    public void setIdentifyer(Long newIdentifyer){
-        identifyer = newIdentifyer;
-    }
-
-    public void setPrice(BigDecimal newPrice){
-        price = newPrice;
-    }
-
-    public void assigntime(){
-        dateTime = ZonedDateTime.now();
-    }
+    private Announcement announcementAbout;
+     */
 }
