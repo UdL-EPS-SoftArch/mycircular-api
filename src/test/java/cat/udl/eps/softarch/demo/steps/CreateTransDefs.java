@@ -2,6 +2,7 @@ package cat.udl.eps.softarch.demo.steps;
 
 import cat.udl.eps.softarch.demo.domain.Transaction;
 import cat.udl.eps.softarch.demo.repository.TransactionRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -51,5 +52,12 @@ public class CreateTransDefs {
         Transaction transaction = transactionRepository.findById(1L).get();
         Assert.assertEquals(Transaction.StatusTypes.valueOf(status), transaction.getStatus());
 
+    }
+
+    @And("I change the status of the transaction to {string}")
+    public void iChangeTheStatusOfTheTransactionTo(String status) {
+        Transaction transaction = transactionRepository.findById(1L).get();
+        transaction.setStatus(Transaction.StatusTypes.valueOf(status));
+        transactionRepository.save(transaction);
     }
 }

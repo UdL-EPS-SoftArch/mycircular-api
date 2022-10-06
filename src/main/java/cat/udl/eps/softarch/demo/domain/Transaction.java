@@ -18,7 +18,7 @@ public class Transaction extends UriEntity<Long> {
     private Long id;
     private ZonedDateTime creationDate;
 
-    public enum StatusTypes {INITIALIZED, IN_PROGRESS, CLOSED;}
+    public enum StatusTypes {INITIALIZED, IN_PROGRESS, CLOSED}
     private StatusTypes status;
 
     @Override
