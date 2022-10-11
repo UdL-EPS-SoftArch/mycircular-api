@@ -6,11 +6,16 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ReviewStepDefs {
 
@@ -19,12 +24,22 @@ public class ReviewStepDefs {
 
     @Autowired
     private ReviewRepository reviewRepository;
-    @Given("There is no review submitted by a buyer with username {string} to a seller with username {string}")
-    public void thereIsNoReviewSubmittedByABuyerWithUsernameToASellerWithUsername(String arg0, String arg1) {
-    }
 
-    @And("The buyer is logged in")
-    public void theBuyerIsLoggedIn() {
+    @Given("There is no review submitted by a buyer with username {string} to a seller with username {string}")
+    public void thereIsNoReviewSubmittedByABuyerWithUsernameToASellerWithUsername(String buyer, String seller) {
+        /*List<Review> reviews = reviewRepository.findByAuthorContaining(buyer);
+
+        boolean alreadyHasSentAReview = false;
+
+        for (Review review : reviews) {
+            if (review.getAbout().getUsername() == seller)
+            {
+                alreadyHasSentAReview = true;
+                break;
+            }
+        }
+
+        Assert.assertFalse(alreadyHasSentAReview);*/
     }
 
     @And("Exists a transaction between the buyer with username {string} and the seller with username {string}")
@@ -85,5 +100,18 @@ public class ReviewStepDefs {
                 .accept(MediaType.APPLICATION_JSON)
                 .with(AuthenticationStepDefs.authenticate()))
             .andDo(print());
+    }
+
+    @And("The buyer with username {string} and password {string} is logged in")
+    public void theBuyerWithUsernameAndPasswordIsLoggedIn(String username, String password) throws Throwable {
+        AuthenticationStepDefs.currentUsername = username;
+        AuthenticationStepDefs.currentPassword = password;
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/identity", username)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }

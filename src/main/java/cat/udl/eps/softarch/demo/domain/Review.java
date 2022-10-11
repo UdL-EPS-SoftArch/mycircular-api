@@ -27,4 +27,10 @@ public class Review {
 
     @Length(max = 256)
     private String message;
+
+    @ManyToOne
+    private User author;
+
+    @ManyToOne
+    private User about;
 }
