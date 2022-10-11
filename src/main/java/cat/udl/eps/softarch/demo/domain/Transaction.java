@@ -20,7 +20,7 @@ public class Transaction extends UriEntity<Long> {
     private ZonedDateTime creationDate;
     private BigDecimal price;
 
-    public enum StatusTypes {INITIALIZED, IN_PROGRESS, CLOSED}
+    public enum StatusTypes {INITIALIZED, IN_PROGRESS, CLOSED, CANCELED}
     private StatusTypes status;
 
     @Override

@@ -23,3 +23,9 @@ Feature: AdminTransaction
     When I Create a new Transaction
     And I change the status of the transaction to "CLOSED"
     Then The transaction status is "CLOSED"
+
+  Scenario: Delete/Cancel an existing transaction
+    Given I login as "demo" with password "password"
+    When I Create a new Transaction
+    And I change the status of the transaction to "CANCELED"
+    Then The transaction status is "CANCELED"
