@@ -25,14 +25,5 @@ public class Offer extends UriEntity<Long> {
     @JsonIdentityReference(alwaysAsId = true)
     private User offererUser;
 
-    @NotBlank
-    private String name;
-
-    @NotBlank
-    private String description;
-
-    @NotBlank
-    private BigDecimal price;
-
 
 }
