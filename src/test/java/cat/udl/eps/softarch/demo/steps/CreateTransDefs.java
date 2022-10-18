@@ -23,6 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 public class CreateTransDefs {
+
+    String newResourceUri;
     @Autowired
     private TransactionRepository transactionRepository;
     @Autowired
@@ -41,23 +43,24 @@ public class CreateTransDefs {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print());
+        newResourceUri = stepDefs.result.andReturn().getResponse().getHeader("Location");
     }
 
 
-    @Then("The transaction status with id {long} is {string}")
-    public void theTransactionStatusIs(long id, String status) throws Exception {
+    @Then("The transaction status is {string}")
+    public void theTransactionStatusIs(String status) throws Exception {
         stepDefs.result = stepDefs.mockMvc.perform(
-                        get("/transactions/{id}", id)
+                        get(newResourceUri)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print())
                 .andExpect(jsonPath("$.status", is(status)));
     }
 
-    @And("I change the status of the transaction with id {long} to {string}")
-    public void iChangeTheStatusOfTheTransactionTo(long id, String status) throws Exception {
+    @And("I change the status of the transaction to {string}")
+    public void iChangeTheStatusOfTheTransactionTo(String status) throws Exception {
         stepDefs.result = stepDefs.mockMvc.perform(
-                        patch("/transactions/{id}", id)
+                        patch(newResourceUri)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content((new JSONObject().put("status", status)).toString())
                                 .accept(MediaType.APPLICATION_JSON)

@@ -11,8 +11,8 @@ Feature: AdminTransaction
   Scenario: Change the status of a transaction
     Given I login as "demo" with password "password"
     When I Create a new Transaction with price 20.05
-    And I change the status of the transaction with id 1 to "CLOSED"
+    And I change the status of the transaction to "CLOSED"
     Then The response code is 200
-    Then The transaction status with id 1 is "CLOSED"
+    Then The transaction status is "CLOSED"
 
 
