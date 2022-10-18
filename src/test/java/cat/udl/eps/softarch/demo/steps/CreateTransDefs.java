@@ -7,6 +7,8 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 
 
@@ -16,7 +18,7 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 public class CreateTransDefs {
@@ -31,9 +33,10 @@ public class CreateTransDefs {
         Assert.assertEquals(0, transactionRepository.count());
     }
 
-    @When("I Create a new Transaction")
-    public void iCreateANewTransaction() throws Exception {
+    @When("^I Create a new Transaction with price ([\\d-.]+)$")
+    public void iCreateANewTransactionWithPrice(BigDecimal price) throws Exception {
         Transaction transaction = new Transaction();
+        transaction.setPrice(price);
 
         stepDefs.result = stepDefs.mockMvc.perform(
                         post("/transactions")
@@ -68,10 +71,17 @@ public class CreateTransDefs {
 
     }
 
-    @And("I change the status of the transaction to {string}")
-    public void iChangeTheStatusOfTheTransactionTo(String status) {
-        Transaction transaction = transactionRepository.findById(1L).get();
-        transaction.setStatus(Transaction.StatusTypes.valueOf(status));
-        transactionRepository.save(transaction);
+    @And("I change the status of the transaction with id {long} to {string}")
+    public void iChangeTheStatusOfTheTransactionTo(long id,String status) throws Exception {
+        JSONObject newStatus = new JSONObject();
+        newStatus.put("status",Transaction.StatusTypes.valueOf(status));
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        patch("/transactions/{id}",id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content((new JSONObject().put("status",status)).toString())
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print());
     }
 }

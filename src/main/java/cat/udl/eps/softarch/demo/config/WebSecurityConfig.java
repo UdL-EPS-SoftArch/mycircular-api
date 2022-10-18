@@ -32,9 +32,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/users").anonymous()
                 .antMatchers(HttpMethod.POST, "/users/*").denyAll()
 
-                .antMatchers(HttpMethod.POST, "/transactions/*").authenticated()
-                .antMatchers(HttpMethod.POST, "/transactions").authenticated()
-
                 .antMatchers(HttpMethod.POST, "/**/*").authenticated()
                 .antMatchers(HttpMethod.PUT, "/**/*").authenticated()
                 .antMatchers(HttpMethod.PATCH, "/**/*").authenticated()
