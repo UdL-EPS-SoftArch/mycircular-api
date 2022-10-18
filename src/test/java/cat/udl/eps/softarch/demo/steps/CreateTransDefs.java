@@ -1,13 +1,12 @@
 package cat.udl.eps.softarch.demo.steps;
 
+import static org.hamcrest.Matchers.is;
 import cat.udl.eps.softarch.demo.domain.Transaction;
 import cat.udl.eps.softarch.demo.repository.TransactionRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 
@@ -20,6 +19,7 @@ import java.math.BigDecimal;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 public class CreateTransDefs {
     @Autowired
@@ -47,7 +47,7 @@ public class CreateTransDefs {
                 .andDo(print());
     }
 
-    @Then("I put the Transaction price {string}")
+    @Then("I put the Transaction price {bigdecimal}")
     public void iModifyTheTransactionPrice(String price) throws Exception {
         Transaction transaction = transactionRepository.findById(1L).get();
         BigDecimal priceDecimal = new BigDecimal(price);
@@ -64,18 +64,18 @@ public class CreateTransDefs {
         BigDecimal priceDecimal = new BigDecimal(price);
         Assert.assertEquals(transaction.getPrice(),priceDecimal);
     }
-    @Then("The transaction status is {string}")
-    public void theTransactionStatusIs(String status) {
-        Transaction transaction = transactionRepository.findById(1L).get();
-        Assert.assertEquals(Transaction.StatusTypes.valueOf(status), transaction.getStatus());
-
+    @Then("The transaction status with id {long} is {string}")
+    public void theTransactionStatusIs(long id, String status) throws Exception {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                get("/transactions/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(jsonPath("$.status", is(status)));
     }
 
     @And("I change the status of the transaction with id {long} to {string}")
     public void iChangeTheStatusOfTheTransactionTo(long id,String status) throws Exception {
-        JSONObject newStatus = new JSONObject();
-        newStatus.put("status",Transaction.StatusTypes.valueOf(status));
-
         stepDefs.result = stepDefs.mockMvc.perform(
                         patch("/transactions/{id}",id)
                                 .contentType(MediaType.APPLICATION_JSON)

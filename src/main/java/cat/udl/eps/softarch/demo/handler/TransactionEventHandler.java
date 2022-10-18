@@ -18,12 +18,6 @@ public class TransactionEventHandler {
             transaction.setStatus(Transaction.StatusTypes.INITIALIZED);
         }
 
-        /*if (transaction.getStatus() != Transaction.StatusTypes.INITIALIZED
-                && transaction.getStatus() != Transaction.StatusTypes.IN_PROGRESS
-                && transaction.getStatus() != Transaction.StatusTypes.CLOSED) {
-            throw new IllegalArgumentException("Status must be one of the following: INITIALIZED, IN_PROGRESS, CLOSED");
-        }*/
-
         ZonedDateTime now = ZonedDateTime.now();
         transaction.setCreationDate(now);
     }
