@@ -89,29 +89,58 @@ public class ProductOfferStepDefs {
     }
 
     @And("After all the steps I can retrieve this product offer which should have the product code {string}.")
-    public void afterAllTheStepsICanRetrieveThisProductOfferWhichShouldHaveTheProductCode(String productCode) {
-        
+    public void afterAllTheStepsICanRetrieveThisProductOfferWhichShouldHaveTheProductCode(String productCode)
+            throws Throwable{
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/productOffers/{id}", "1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(jsonPath("$.productCode", is(productCode)))
+                .andExpect(status().isOk());
     }
 
     @Then("I want to modify this product's brand to {string}.")
-    public void iWantToModifyThisProductSBrandTo(String brandName) {
-        
+    public void iWantToModifyThisProductSBrandTo(String brandName) throws Throwable {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        patch("/productOffers/{id}", "1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content((new JSONObject().put("brand", brandName)).toString())
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate())
+                ).andDo(print())
+                .andExpect(jsonPath("$.brand", is(brandName)));
     }
 
     @And("After all the steps I can retrieve this product offer which should have the brand {string}.")
-    public void afterAllTheStepsICanRetrieveThisProductOfferWhichShouldHaveTheBrand(String brandName) {
-        
+    public void afterAllTheStepsICanRetrieveThisProductOfferWhichShouldHaveTheBrand(String brandName) throws Throwable{
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/productOffers/{id}", "1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(jsonPath("$.brand", is(brandName)))
+                .andExpect(status().isOk());
     }
 
 
     @Then("I want to delete the product offer with id {string}.")
-    public void iWantToDeleteTheProductOfferWithId(String id) {
-        
+    public void iWantToDeleteTheProductOfferWithId(String id) throws Throwable{
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        delete("/productOffers/{id}", id)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print());
     }
 
     @And("I want to check that the product offer doesn't exist anymore.")
-    public void iWantToCheckThatTheProductOfferDoesnTExistAnymore() {
-
+    public void iWantToCheckThatTheProductOfferDoesnTExistAnymore() throws Throwable{
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/productOffers/{id}", "1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
 
