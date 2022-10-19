@@ -86,5 +86,57 @@ public class ServiceOfferStepDefs {
                 .andDo(print());
     }
 
+    @And("After all the steps I can retrieve this Service offer which should have the available {string}.")
+    public void afterAllTheStepsICanRetrieveThisServiceOfferWhichShouldHaveTheAvailable(String available) throws Throwable  {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/serviceOffers/{id}", "1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(jsonPath("$.availability", is(Boolean.parseBoolean(available))))
+                .andExpect(status().isOk());
+    }
 
+
+    @Then("I want to modify this Service Offer duration to {string} hours.")
+    public void iWantToModifyThisServiceOfferDurationToHours(String time) throws Throwable  {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        patch("/serviceOffers/{id}", "1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content((new JSONObject().put("durationInHours", Integer.parseInt(time))).toString())
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate())
+                ).andDo(print())
+                .andExpect(jsonPath("$.durationInHours", is(Integer.parseInt(time))));
+    }
+
+    @And("After all the steps I can retrieve this Service Offer which should have a duration off {string} hours.")
+    public void afterAllTheStepsICanRetrieveThisServiceOfferWhichShouldHaveADurationOffHours(String time) throws Throwable {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/serviceOffers/{id}", "1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(jsonPath("$.durationInHours", is(Integer.parseInt(time))))
+                .andExpect(status().isOk());
+    }
+
+    @Then("i want to delete the Service Offer with id {string}")
+    public void iWantToDeleteTheServiceOfferWithId(String id) throws Throwable {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        delete("/serviceOffers/{id}", id)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print());
+    }
+
+    @And("i want to check that the Service Offer doesn't exist anymore.")
+    public void iWantToCheckThatTheServiceOfferDoesnTExistAnymore() throws Throwable {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/serviceOffers/{id}", "1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }
