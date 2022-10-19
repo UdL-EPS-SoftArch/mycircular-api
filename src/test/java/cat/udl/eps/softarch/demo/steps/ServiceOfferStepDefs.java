@@ -1,21 +1,17 @@
 package cat.udl.eps.softarch.demo.steps;
 
-import cat.udl.eps.softarch.demo.domain.Offer;
 import cat.udl.eps.softarch.demo.domain.ServiceOffer;
 import cat.udl.eps.softarch.demo.domain.User;
 import cat.udl.eps.softarch.demo.repository.OfferRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
@@ -35,8 +31,6 @@ public class ServiceOfferStepDefs {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private OfferRepository offerRepository;
     private ServiceOffer offer;
 
     @Then("The Service offer should be created")
@@ -58,8 +52,10 @@ public class ServiceOfferStepDefs {
 
     @And("the Service Offer has a ZoneDateTime {string} and a offerer user {string}")
     public void theServiceOfferHasAZoneDateTimeAndAOffererUser(String dateTime, String offerer) {
-        Date expectedDate = new Date("01/02/2018");
-        offer.setDateTime(new Date(dateTime));
+        ZonedDateTime date = ZonedDateTime.parse(dateTime);
+        offer.setDateTime(date);
+        String exprectedDateStr = "2018-02-12T12:08:23Z";
+        ZonedDateTime expectedDate = ZonedDateTime.parse(exprectedDateStr);
         Optional<User> user = userRepository.findById(offerer);
         user.ifPresent(value -> offer.setOfferer(value));
 

@@ -9,7 +9,7 @@ Feature: Create an Offer
     And There is no offer created from the user "user"
     Then The offer should be created together with the announcement
     And which has a name "product1", description "product description" and a price "10".
-    And a ZoneDateTime "01/02/2018" and a offerer user "user"
+    And a ZoneDateTime "2018-02-12T12:08:23Z" and a offerer user "user"
     And After all the steps I can retrieve this offer which should have the name "product1".
 
   Scenario: Modify a created Offer
@@ -18,7 +18,7 @@ Feature: Create an Offer
     And There is no offer created from the user "user"
     Then The offer should be created together with the announcement
     And which has a name "product1", description "product description" and a price "10".
-    And a ZoneDateTime "01/02/2018" and a offerer user "user"
+    And a ZoneDateTime "2018-02-12T12:08:23Z" and a offerer user "user"
     And After all the steps I can retrieve this offer which should have the name "product1".
     Then I want to modify this product's name to "Laptop1".
     And After all the steps I can retrieve this offer which should have the name "Laptop1".
@@ -29,7 +29,7 @@ Feature: Create an Offer
     And There is no offer created from the user "user"
     Then The offer should be created together with the announcement
     And which has a name "product1", description "product description" and a price "10".
-    And a ZoneDateTime "01/02/2018" and a offerer user "user"
+    And a ZoneDateTime "2018-02-12T12:08:23Z" and a offerer user "user"
     And After all the steps I can retrieve this offer which should have the name "product1".
     Then I want to delete the offer with id "1".
     And I want to check that the offer doesn't exist anymore.

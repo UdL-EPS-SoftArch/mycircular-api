@@ -8,7 +8,7 @@ Feature: Create an ServiceOffer
     And I login as "user" with password "password"
     Then The Service offer should be created
     And the Service Offer has a name "product1", description "product description" and a price "10".
-    And the Service Offer has a ZoneDateTime "01/02/2018" and a offerer user "user"
+    And the Service Offer has a ZoneDateTime "2018-02-12T12:08:23Z" and a offerer user "user"
     And service are available "True" and duration is "2" hours.
     And After all the steps I can retrieve this Service offer which should have the available "True".
 
@@ -17,7 +17,7 @@ Feature: Create an ServiceOffer
     And I login as "user" with password "password"
     Then The Service offer should be created
     And the Service Offer has a name "product1", description "product description" and a price "10".
-    And the Service Offer has a ZoneDateTime "01/02/2018" and a offerer user "user"
+    And the Service Offer has a ZoneDateTime "2018-02-12T12:08:23Z" and a offerer user "user"
     And service are available "True" and duration is "2" hours.
     And After all the steps I can retrieve this Service offer which should have the available "True".
     Then I want to modify this Service Offer duration to "5" hours.
@@ -28,7 +28,7 @@ Feature: Create an ServiceOffer
     And I login as "user" with password "password"
     Then The Service offer should be created
     And the Service Offer has a name "product1", description "product description" and a price "10".
-    And the Service Offer has a ZoneDateTime "01/02/2018" and a offerer user "user"
+    And the Service Offer has a ZoneDateTime "2018-02-12T12:08:23Z" and a offerer user "user"
     And service are available "True" and duration is "2" hours.
     And After all the steps I can retrieve this Service offer which should have the available "True".
     Then i want to delete the Service Offer with id "1"

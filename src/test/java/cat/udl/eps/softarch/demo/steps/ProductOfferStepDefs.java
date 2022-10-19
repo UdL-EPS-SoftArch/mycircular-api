@@ -5,16 +5,13 @@ import cat.udl.eps.softarch.demo.domain.User;
 import cat.udl.eps.softarch.demo.repository.OfferRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
@@ -33,9 +30,6 @@ public class ProductOfferStepDefs {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private OfferRepository offerRepository;
 
     private ProductOffer productOffer;
     
@@ -59,8 +53,10 @@ public class ProductOfferStepDefs {
 
     @And("the product offer has a ZoneDateTime {string} and a offerer user {string}")
     public void theProductOfferHasAZoneDateTimeAndAOffererUser(String dateTime, String offerer) {
-        Date expectedDate = new Date("01/02/2018");
-        productOffer.setDateTime(new Date(dateTime));
+        ZonedDateTime date = ZonedDateTime.parse(dateTime);
+        productOffer.setDateTime(date);
+        String exprectedDateStr = "2018-02-12T12:08:23Z";
+        ZonedDateTime expectedDate = ZonedDateTime.parse(exprectedDateStr);
         Optional<User> user = userRepository.findById(offerer);
         user.ifPresent(value -> productOffer.setOfferer(value));
 

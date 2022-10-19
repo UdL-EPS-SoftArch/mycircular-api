@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import javax.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Offer extends Announcement {
 
-    private Date dateTime;
+    private ZonedDateTime dateTime;
 
     @ManyToOne
     @JsonIdentityReference(alwaysAsId = true)

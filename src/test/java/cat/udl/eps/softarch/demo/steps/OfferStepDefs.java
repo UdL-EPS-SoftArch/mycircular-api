@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
@@ -50,7 +50,7 @@ public class OfferStepDefs {
     public void theOfferShouldBeCreatedTogetherWithTheAnnouncement() {
         offer = new Offer();
 
-        Assert.assertFalse(offer == null);
+        Assert.assertNotNull(offer);
     }
 
     @And("which has a name {string}, description {string} and a price {string}.")
@@ -67,8 +67,10 @@ public class OfferStepDefs {
     @Transactional
     @And("a ZoneDateTime {string} and a offerer user {string}")
     public void aZoneDateTimeAndAOffererUser(String dateTime, String offerer) throws Throwable {
-        Date expectedDate = new Date("01/02/2018");
-        offer.setDateTime(new Date(dateTime));
+        ZonedDateTime date = ZonedDateTime.parse(dateTime);
+        offer.setDateTime(date);
+        String exprectedDateStr = "2018-02-12T12:08:23Z";
+        ZonedDateTime expectedDate = ZonedDateTime.parse(exprectedDateStr);
         Optional<User> user = userRepository.findById(offerer);
         user.ifPresent(value -> offer.setOfferer(value));
 
