@@ -1,6 +1,9 @@
 package cat.udl.eps.softarch.demo.steps;
 
+import cat.udl.eps.softarch.demo.domain.Announcement;
 import cat.udl.eps.softarch.demo.domain.Message;
+import cat.udl.eps.softarch.demo.domain.User;
+import cat.udl.eps.softarch.demo.repository.AnnouncementRepository;
 import cat.udl.eps.softarch.demo.repository.MessageRepository;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -9,6 +12,7 @@ import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -28,9 +32,8 @@ public class MessageStepDefs {
         assert messages == 0;
     }
 
-
     @When("I send a message with date {string} and text {string}")
-    public void iSendAMessageWithDateAndText(String date, String text) throws Exception {
+    public void iSendAMessageWithDateAndTextFor(String date, String text) throws Exception {
         ZonedDateTime dated = ZonedDateTime.parse(date);
         Message message = new Message();
         //message.setId(ident);
@@ -44,6 +47,4 @@ public class MessageStepDefs {
                         .accept(MediaType.APPLICATION_JSON)
                         .with(AuthenticationStepDefs.authenticate())).andDo(print());
     }
-
-
 }
