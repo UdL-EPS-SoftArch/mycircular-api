@@ -1,14 +1,21 @@
-Feature: AdminTransaction
-  In order buy or sell a product or service
-  As a admin
-  I want to create a transaction.
+Feature: Retrieve Transaction
+  We need to be able to see the created transactions
+  As a certain user or admin
+  I want to see all my transactions
 
   Background:
     Given There is a registered user with username "user1" and password "password" and email "user0@sample.app"
     Given There is a registered user with username "user2" and password "password" and email "user0@sample.app"
-    And There is a transaction created with Buyer "user1" and Seller "user2"
+    And There is a transaction created with id 1 Buyer "user1" and Seller "user2"
+    And There is a transaction created with id 2 Buyer "user3" and Seller "user4"
 
-  Scenario: List all transactions of a User
+  Scenario: List all transactions as an admin
+    Given I can login with username "user1" and password "password"
+    When I list the transactions of all users
+    Then The response code is 200
 
-
+  Scenario: List all transactions with a user
+    Given I can login with username "user1" and password "password"
+    When I list the transactions with id 1
+    Then The response code is 200
 
