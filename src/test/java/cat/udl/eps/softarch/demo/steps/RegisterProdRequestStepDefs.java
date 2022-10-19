@@ -47,12 +47,12 @@ public class RegisterProdRequestStepDefs {
         prodRequest.setRequester(nene);
 
         stepDefs.result = stepDefs.mockMvc.perform(
-                        post("/prodrequests")
+                        post("/prodRequests")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(stepDefs.mapper.writeValueAsString(prodRequest))
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(AuthenticationStepDefs.authenticate()))
-                .andDo(print()).andExpect(status().isCreated());
+                .andDo(print());
     }
 
     @Then("There are {int} product request created")
@@ -88,8 +88,7 @@ public class RegisterProdRequestStepDefs {
                                 .content(stepDefs.mapper.writeValueAsString(prodRequest))
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(AuthenticationStepDefs.authenticate())
-                ).andDo(print())
-                .andExpect(status().isCreated());
+                ).andDo(print());
     }
 
     @When("I Create a new product request with name {string}, price {int}, description {string}")
@@ -97,7 +96,7 @@ public class RegisterProdRequestStepDefs {
         ProdRequest prodRequest = setProdRequestParams(name, price, description);
 
         stepDefs.result = stepDefs.mockMvc.perform(
-                post("/requests")
+                post("/prodRequests")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(stepDefs.mapper.writeValueAsString(prodRequest))
                         .accept(MediaType.APPLICATION_JSON)

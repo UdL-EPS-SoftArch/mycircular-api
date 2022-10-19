@@ -10,5 +10,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
 
-public interface ProdRequestRepository extends RequestRepository{
+@RepositoryRestResource
+public interface ProdRequestRepository extends PagingAndSortingRepository<ProdRequest, Long> {
 }

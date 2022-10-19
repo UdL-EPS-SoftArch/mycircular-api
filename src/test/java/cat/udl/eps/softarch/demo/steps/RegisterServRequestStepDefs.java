@@ -43,7 +43,7 @@ public class RegisterServRequestStepDefs {
         servRequest.setRequester(nene);
 
         stepDefs.result = stepDefs.mockMvc.perform(
-                        post("/requests")
+                        post("/servRequests")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(stepDefs.mapper.writeValueAsString(servRequest))
                                 .accept(MediaType.APPLICATION_JSON)
@@ -81,13 +81,12 @@ public class RegisterServRequestStepDefs {
         servRequest.setRequester(requester);
 
         stepDefs.result = stepDefs.mockMvc.perform(
-                        post("/requests")
+                        post("/servRequests")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(stepDefs.mapper.writeValueAsString(servRequest))
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(AuthenticationStepDefs.authenticate())
-                ).andDo(print())
-                .andExpect(status().isCreated());
+                ).andDo(print());
     }
 
 
@@ -96,7 +95,7 @@ public class RegisterServRequestStepDefs {
         ServRequest servRequest = setProdRequestParams(name, price, description);
 
         stepDefs.result = stepDefs.mockMvc.perform(
-                post("/requests")
+                post("/servRequests")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(stepDefs.mapper.writeValueAsString(servRequest))
                         .accept(MediaType.APPLICATION_JSON)
