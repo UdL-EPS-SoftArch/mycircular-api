@@ -31,16 +31,16 @@ public class RetrieveTransStepDefs {
     @Autowired
     private UserRepository userRepository;
 
-    @When("I list the transactions for an User {String}")
+   /* @When("I list the transactions for an User {String}")
     public void iListTheTranascitonsForAnUser(String user) throws Exception {
         stepDefs.result = stepDefs.mockMvc.perform(
                         get("/reviews/{about}", user)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print());
-    }
+    }*/
 
-    @And("There is a transaction created with id {int} Buyer {string} and Seller {String}")
+    @And("There is a transaction created with id {int} Buyer {string} and Seller {string}")
     public void thereIsATransactionCreatedWithIdIntBuyerStringAndSellerString(int id, String buyer, String seller) {
         Long lid = (long) id;
         if (!transactionRepository.existsById(lid)) {
@@ -55,8 +55,21 @@ public class RetrieveTransStepDefs {
                 transaction.setSeller(userSeller.get(0));
         }
     }
-
-    @And("There is a transaction created with Buyer {string} and Seller {String}")
-    public void thereIsATransactionCreatedWithBuyerStringAndSellerString(String user1,String user2) {
+    @When("I list the transactions of all users")
+    public void IlistTheTransactionsOfAllUsers() throws Exception{
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/transactions")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print());
     }
+     @When("I list the transactions with id {int}")
+    public void IlistTheTransactionsWithId(int id) throws Exception{
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/transactions/" + id)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print());
+    }
+
 }
