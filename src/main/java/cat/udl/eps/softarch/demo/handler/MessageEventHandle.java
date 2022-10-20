@@ -1,6 +1,5 @@
 package cat.udl.eps.softarch.demo.handler;
 
-
 import cat.udl.eps.softarch.demo.domain.Message;
 import cat.udl.eps.softarch.demo.repository.MessageRepository;
 import org.slf4j.Logger;
@@ -15,11 +14,10 @@ public class MessageEventHandle {
 
     final MessageRepository messageRepository;
 
-    public MessageEventHandle(MessageRepository messageRepository){this.messageRepository = messageRepository;}
+    public MessageEventHandle(MessageRepository messageRepository) {this.messageRepository = messageRepository;}
 
     @HandleBeforeCreate
-    public void handleMessagePreCreate(Message message){logger.info("Before creating: {}", message.toString());}
-
+    public void handleMessagePreCreate(Message message) {logger.info("Before creating: {}", message.toString());}
 
     @HandleAfterDelete
     public void handleMessagePostDelete(Message message) {
