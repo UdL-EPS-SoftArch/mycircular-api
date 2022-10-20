@@ -26,5 +26,14 @@ Feature: Submit review
     And The error message is "must be greater than or equal to 1"
     And A new review has not been created
 
+  Scenario: Submit review with overvalued field stars
+    Given I can login with username "user0" and password "password0"
+    When The buyer submits a new review with username "user0", number of stars 6 and message "Great" to a seller "user1"
+    Then The response code is 400
+    And The error message is "must be less than or equal to 5"
+    And A new review has not been created
+
+
+
 
     

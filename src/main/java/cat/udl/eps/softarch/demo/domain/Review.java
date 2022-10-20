@@ -2,7 +2,6 @@ package cat.udl.eps.softarch.demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -15,7 +14,6 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Data
-@EqualsAndHashCode(callSuper = false)
 public class Review {
 
     @GeneratedValue(strategy = GenerationType.AUTO)

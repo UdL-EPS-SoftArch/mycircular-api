@@ -14,11 +14,30 @@ Feature: Retrieve review
     When I list all the reviews
     Then The response code is 200
 
-   Scenario: Show a review by id as a user
-     Given I can login with username "user0" and password "password0"
-     When I list the review with id 2
-     Then The response code is 200
-     
+  Scenario: Show a review by id as a user
+    Given I can login with username "user0" and password "password0"
+    When I list the review with id 2
+    Then The response code is 200
+
+  Scenario: Show review by number of stars
+    Given  I can login with username "user0" and password "password0"
+    When I list the review with number of stars 5
+    Then The response code is 200
+
+  Scenario: Show review by message
+    Given  I can login with username "user0" and password "password0"
+    When I list the review with message "Terrible!"
+    Then The response code is 200
+
+  Scenario: Show all reviews for one user
+    Given I can login with username "user0" and password "password0"
+    When I list all reviews for user "user0"
+    Then The response code is 200
+
+  Scenario: Show all reviews that one user has made
+    Given I can login with username "user0" and password "password0"
+    When I list all reviews that user "user1" has already made
+    Then The response code is 200
 
 
 

@@ -118,18 +118,9 @@ public class SubmitReviewStepDefs {
 
 
 
-    /*@And("There is already a review with id {int} submitted by a buyer with username {string} to a seller with username {string}")
-    public void thereIsAlreadyAReviewWithIdSubmittedByABuyerWithUsernameToASellerWithUsername(int reviewId, String author, String about) {
 
-        List<Review> reviews = reviewRepository.findById(reviewId);
-        boolean existReview = false;
 
-        for (Review review : reviews) {
-            if(review.getAuthor().getUsername() == author && review.getAbout().getUsername() == about)
-            {
-                existReview = true;
-            }
-        }
-        Assert.assertFalse(existReview);
-    }*/
+
+
+
 }
