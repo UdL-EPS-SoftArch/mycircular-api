@@ -5,6 +5,7 @@ import cat.udl.eps.softarch.demo.domain.Message;
 import cat.udl.eps.softarch.demo.domain.User;
 import cat.udl.eps.softarch.demo.repository.AnnouncementRepository;
 import cat.udl.eps.softarch.demo.repository.MessageRepository;
+import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
@@ -24,6 +25,8 @@ public class MessageStepDefs {
     private StepDefs stepDefs;
     @Autowired
     private MessageRepository messageRepository;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @And("I don't have any messages")
@@ -32,13 +35,16 @@ public class MessageStepDefs {
         assert messages == 0;
     }
 
-    @When("I send a message with date {string} and text {string}")
-    public void iSendAMessageWithDateAndTextFor(String date, String text) throws Exception {
+    @When("I send a message with date {string}, text {string} and author {string}")
+    public void iSendAMessageWithDateTextAndAuthor(String date, String text, String author) throws Exception{
         ZonedDateTime dated = ZonedDateTime.parse(date);
         Message message = new Message();
+        List<User> authors = userRepository.findByUsernameContaining(author);
+
         //message.setId(ident);
         message.setWhen(dated);
         message.setText(text);
+        message.setAuthor(authors.get(0));
 
         stepDefs.result = stepDefs.mockMvc.perform(
                 post("/messages")
