@@ -1,5 +1,6 @@
 package cat.udl.eps.softarch.demo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.CreatedDate;
@@ -31,13 +32,16 @@ public class Transaction extends UriEntity<Long> {
 
     @ManyToOne
     @NotNull
+    @JsonIdentityReference(alwaysAsId = true)
     private User buyer;
 
     @ManyToOne
     @NotNull
+    @JsonIdentityReference(alwaysAsId = true)
+
     private User seller;
 
     @OneToOne
-    @NotNull
+    @JsonIdentityReference(alwaysAsId = true)
     private Announcement announcementAbout;
 }
