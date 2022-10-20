@@ -7,6 +7,7 @@ import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,5 +130,19 @@ public class OfferStepDefs {
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Then("I shouldn't be able to create any offer.")
+    public void iShouldnTBeAbleToCreateAnyOffer() throws Throwable {
+        Offer newOffer = new Offer();
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        post("/offers")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(stepDefs.mapper.writeValueAsString(newOffer))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isBadRequest());;
     }
 }

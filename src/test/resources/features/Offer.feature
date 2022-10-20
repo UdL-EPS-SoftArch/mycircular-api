@@ -33,3 +33,7 @@ Feature: Create an Offer
     And After all the steps I can retrieve this offer which should have the name "product1".
     Then I want to delete the offer with id "1".
     And I want to check that the offer doesn't exist anymore.
+
+  Scenario: Cannot create an offer if i'm not logged in
+    Given I'm not logged in
+    Then I shouldn't be able to create any offer.
