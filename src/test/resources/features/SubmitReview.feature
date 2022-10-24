@@ -6,6 +6,8 @@ Feature: Submit review
   Background:
     Given There is a registered user with username "user0" and password "password0" and email "user0@sample.app"
     Given There is a registered user with username "user1" and password "password1" and email "user1@sample.app"
+    Given There is a registered admin with username "admin" and password "password" and email "admin@local.com"
+
 
   Scenario: Submit a new review
     Given I can login with username "user0" and password "password0"
@@ -31,6 +33,12 @@ Feature: Submit review
     When The buyer submits a new review with username "user0", number of stars 6 and message "Great" to a seller "user1"
     Then The response code is 400
     And The error message is "must be less than or equal to 5"
+    And A new review has not been created
+
+  Scenario: Submit a review as admin
+    Given I login as "admin" with password "password"
+    When The buyer submits a new review with username "user0", number of stars 0 and message "Great" to a seller "user1"
+    Then The response code is 403
     And A new review has not been created
 
 

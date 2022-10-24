@@ -1,10 +1,13 @@
 package cat.udl.eps.softarch.demo.steps;
 
+import cat.udl.eps.softarch.demo.domain.Admin;
 import cat.udl.eps.softarch.demo.domain.Review;
 import cat.udl.eps.softarch.demo.domain.User;
+import cat.udl.eps.softarch.demo.repository.AdminRepository;
 import cat.udl.eps.softarch.demo.repository.ReviewRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
@@ -24,13 +27,16 @@ public class SubmitReviewStepDefs {
     private StepDefs stepDefs;
     private ReviewRepository reviewRepository;
     private UserRepository userRepository;
+    private AdminRepository adminRepository;
     String newUri;
     public static String id;
 
-    public SubmitReviewStepDefs(StepDefs stepDefs, ReviewRepository reviewRepository, UserRepository userRepository){
+    public SubmitReviewStepDefs(StepDefs stepDefs, ReviewRepository reviewRepository, UserRepository userRepository
+    , AdminRepository adminRepository){
         this.stepDefs = stepDefs;
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
+        this.adminRepository = adminRepository;
     }
 
 
@@ -114,13 +120,17 @@ public class SubmitReviewStepDefs {
     }
 
 
+    @Given("There is a registered admin with username {string} and password {string} and email {string}")
+    public void thereIsARegisteredAdminWithUsernameAndPasswordAndEmail(String username, String password, String email) throws Throwable{
 
-
-
-
-
-
-
-
-
+        if(!adminRepository.existsById(username))
+        {
+            Admin admin = new Admin();
+            admin.setEmail(email);
+            admin.setPassword(password);
+            admin.setUsername(username);
+            admin.encodePassword();
+            adminRepository.save(admin);
+        }
+    }
 }
