@@ -5,11 +5,13 @@ import cat.udl.eps.softarch.demo.domain.User;
 import cat.udl.eps.softarch.demo.repository.ReviewRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.junit.Assert;
 
+import java.util.Iterator;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -113,14 +115,22 @@ public class SubmitReviewStepDefs {
         }
     }
 
+    @And("There is already a review submitted by a buyer with username {string} to a seller with username {string}")
+    public void thereIsAlreadyAReviewSubmittedByABuyerWithUsernameToASellerWithUsername(String buyerUsername, String sellerUsername) {
+        List<User> buyer = userRepository.findByUsernameContaining(buyerUsername);
+        List<User> seller = userRepository.findByUsernameContaining(sellerUsername);
 
+        Review review = new Review();
+        review.setStars(5);
+        review.setMessage("Fantastic!");
+        review.setAuthor(buyer.get(0));
+        review.setAbout(seller.get(0));
 
+        reviewRepository.save(review);
+    }
 
-
-
-
-
-
-
-
+    @And("A duplicated review has not been created")
+    public void aDuplicatedReviewHasNotBeenCreated() {
+        Assert.assertEquals(1, reviewRepository.count());
+    }
 }

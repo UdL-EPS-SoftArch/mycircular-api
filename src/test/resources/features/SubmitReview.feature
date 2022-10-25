@@ -33,7 +33,9 @@ Feature: Submit review
     And The error message is "must be less than or equal to 5"
     And A new review has not been created
 
-
-
-
-    
+  Scenario: Submit a review to a seller that already has one review submitted by the same buyer
+    Given I can login with username "user0" and password "password0"
+    And There is already a review submitted by a buyer with username "user0" to a seller with username "user1"
+    When The buyer submits a new review with username "user0", number of stars 5 and message "Fantastic!" to a seller "user1"
+    Then The response code is 409
+    And A duplicated review has not been created

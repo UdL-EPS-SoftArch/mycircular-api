@@ -11,11 +11,14 @@ import javax.validation.constraints.NotNull;
 
 import java.time.ZonedDateTime;
 
-
 @Entity
 @Data
-public class Review {
 
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"authorId", "aboutId"})
+})
+
+public class Review {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private int id;
@@ -31,12 +34,14 @@ public class Review {
     private String message;
 
     @ManyToOne
-    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
+    @JoinColumn(name = "authorId")
+    @NotNull
     private User author;
 
     @ManyToOne
-    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
+    @JoinColumn(name = "aboutId")
+    @NotNull
     private User about;
 }
