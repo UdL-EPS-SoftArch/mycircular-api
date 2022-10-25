@@ -7,7 +7,7 @@ Feature: Retrieve Transaction
     Given There is a registered user with username "user1" and password "password" and email "user0@sample.app"
     Given There is a registered user with username "user2" and password "password" and email "user1@sample.app"
     And There is a transaction created with id 1 Buyer "user1" and Seller "user2"
-    And There is a transaction created with id 2 Buyer "user3" and Seller "user4"
+    And There is a transaction created with id 2 Buyer "user2" and Seller "user1"
 
   Scenario: List all transactions as an admin
     Given I can login with username "user1" and password "password"

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -41,7 +42,7 @@ public class RetrieveTransStepDefs {
     }*/
 
     @And("There is a transaction created with id {int} Buyer {string} and Seller {string}")
-    public void thereIsATransactionCreatedWithIdIntBuyerStringAndSellerString(int id, String buyer, String seller) {
+    public void thereIsATransactionCreatedWithIdIntBuyerStringAndSellerString(int id, String buyer, String seller) throws Exception{
         Long lid = (long) id;
         if (!transactionRepository.existsById(lid)) {
             Transaction transaction = new Transaction();
@@ -53,6 +54,15 @@ public class RetrieveTransStepDefs {
             List<User> userSeller = userRepository.findByUsernameContaining(seller);
             if (userbuyer.size() != 0)
                 transaction.setSeller(userSeller.get(0));
+
+            BigDecimal price = new BigDecimal("20.05");
+            transaction.setPrice(price);
+            ZonedDateTime now = ZonedDateTime.now();
+            transaction.setCreationDate(now);
+            if (transaction.getStatus() == null) {
+                transaction.setStatus(Transaction.StatusTypes.INITIALIZED);
+            }
+            transactionRepository.save(transaction);
         }
     }
     @When("I list the transactions of all users")
