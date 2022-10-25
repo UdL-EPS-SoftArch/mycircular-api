@@ -3,7 +3,7 @@ Feature: Delete a Request
   Background:
     Given There is a registered user with username "user" and password "password" and email "user@sample.app"
 
-  Scenario:
+  Scenario: Delete success
     Given I can login with username "user" and password "password"
     And There is an offer created with name "croqueta2", price 100, description "le hago la competencia a la mama" and offerer named "Paco"
     And There are 1 offer created
@@ -13,10 +13,18 @@ Feature: Delete a Request
     And The response code is 204
     And I want to check that the request doesn't exist anymore
 
-  Scenario:
+  Scenario: Unauthorized delete
     Given I'm not logged in
     And There is an offer already created
     And There is a request already created
     When I delete a request with id "2"
     Then The response code is 401
+    And I want to check that the request still exist
+
+  Scenario: Forbidden delete
+    Given I can login with username "user" and password "password"
+    And There is an offer already created
+    And There is a request already created
+    When I delete a request with id "2"
+    Then The response code is 403
     And I want to check that the request still exist

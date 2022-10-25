@@ -42,9 +42,6 @@ public class DeleteRequestStepDefs {
 
     @When("I delete a request with id {string}")
     public void iDeleteARequestWithId(String id) throws Exception {
-        List<Request> req = requestRepository.findById(3);
-
-        System.out.println(req);
         stepDefs.result = stepDefs.mockMvc.perform(
                         delete("/requests/{id}", id)
                                 .accept(MediaType.APPLICATION_JSON)

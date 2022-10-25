@@ -6,6 +6,8 @@ import cat.udl.eps.softarch.demo.exception.ForbiddenException;
 import cat.udl.eps.softarch.demo.exception.UnauthorizedException;
 import cat.udl.eps.softarch.demo.repository.RequestRepository;
 import org.springframework.data.rest.core.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 
@@ -72,6 +74,19 @@ public class RequestEventHandler {
         assert request.getId() != null;
 
         List<Request> requestList = requestRepository.findByRequester(request.getRequester());
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        if(!Objects.equals(username, request.getRequester().getUsername())){
+            throw new ForbiddenException();
+        }
 
         if(!requestList.contains(request)){
             throw new ForbiddenException();

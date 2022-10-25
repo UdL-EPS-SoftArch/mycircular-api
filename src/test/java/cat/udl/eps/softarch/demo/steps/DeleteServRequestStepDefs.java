@@ -6,10 +6,15 @@ import cat.udl.eps.softarch.demo.domain.User;
 import cat.udl.eps.softarch.demo.repository.RequestRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 public class DeleteServRequestStepDefs {
 
@@ -17,6 +22,8 @@ public class DeleteServRequestStepDefs {
     private RequestRepository requestRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private StepDefs stepDefs;
 
     @And("There is a service request already created")
     public void thereIsAServiceRequestAlreadyCreated() {
@@ -33,5 +40,14 @@ public class DeleteServRequestStepDefs {
         servRequest.setRequester(requester);
         requestRepository.save(servRequest);
         Assert.assertEquals(1, requestRepository.count());
+    }
+
+    @When("I delete a service request with id {string}")
+    public void iDeleteAServiceRequestWithId(String id) throws Exception {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        delete("/servRequests/{id}", id)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print());
     }
 }
