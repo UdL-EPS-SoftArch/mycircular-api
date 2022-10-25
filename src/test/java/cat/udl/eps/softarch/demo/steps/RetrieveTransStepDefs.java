@@ -96,5 +96,12 @@ public class RetrieveTransStepDefs {
             id++;
         }
     }
-
+    @When("I list the transactions with id {int}")
+    public void IlistTheTransactionsWithId(int id) throws Exception {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/transactions/" + id)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print());
+    }
 }

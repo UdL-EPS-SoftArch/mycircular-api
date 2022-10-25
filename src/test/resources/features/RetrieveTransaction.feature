@@ -19,3 +19,7 @@ Feature: Retrieve Transaction
     When I list the transactions with user "user1"
     Then The response code is 200
 
+  Scenario: List a certain transaction of a user
+    Given I can login with username "user1" and password "password"
+    When I list the transactions with id 1
+    Then The response code is 200
