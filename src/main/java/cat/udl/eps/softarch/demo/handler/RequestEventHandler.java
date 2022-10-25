@@ -43,7 +43,6 @@ public class RequestEventHandler {
         }
     }
 
-
     //TODO: si no funciona, deberíamos redefinir el equals. Supuestamente String ya tiene uno que funciona, y BigDecimal tambien. El poblemo es comparar users.
     private boolean differentAtts(Request oldRequest, Request newRequest) {
         return  !oldRequest.getName().equals(newRequest.getName()) &&
