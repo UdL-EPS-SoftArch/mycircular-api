@@ -13,27 +13,29 @@ Feature: Retrieve a Request
     And The response code is 201
 
 
-    Scenario: Retrieve my own requests successfully
-      Given I can login with username "user" and password "password"
-      And The response code is 200
-      When I retrieve my own created requests
-      Then The response code is 200
-      And I see 1 requests
+  Scenario: Retrieve my own requests successfully
+    Given I can login with username "user" and password "password"
+    And The response code is 200
+    When I retrieve my own created requests
+    Then The response code is 200
+    And I see 1 requests
 
+#no se como distinguir entre el currentuser y otro user
+  Scenario: Retrieve other user's requests
+    Given I can login with username "user" and password "password"
+    And The response code is 200
+    When I retrieve requests from user "Antonio"
+    Then The response code is 200
+    And I see 1 requests
 
-    Scenario: Retrieve other user's requests
-      Given I can login with username "user" and password "password"
-      And The response code is 200
-      When I retrieve requests from user "Antonio"
-      Then The response code is 200
-      And I see 1 requests
+  Scenario: Retrieve user's own requests but user is not logged in
+    Given I'm not logged in
+    When I retrieve my own created requests
+    Then The response code is 401
+    And I can't see any request
 
-    Scenario: Retrieve requests but user is not logged in
-      Given I'm not logged in
-      When I retrieve my own created requests
-      Then The response code is 401
-      And I see 0 requests
-
-      When I retrieve requests from user "Antonio"
-      Then The response code is 401
-      And I see 0 requests
+  Scenario: Retrieve other user's requests but user is not logged in
+    Given I'm not logged in
+    When I retrieve requests from user "Antonio"
+    Then The response code is 401
+    And I see 0 requests

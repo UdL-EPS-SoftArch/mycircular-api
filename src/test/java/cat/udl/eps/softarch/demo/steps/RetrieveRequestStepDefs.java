@@ -2,6 +2,7 @@ package cat.udl.eps.softarch.demo.steps;
 
 import cat.udl.eps.softarch.demo.domain.Request;
 import cat.udl.eps.softarch.demo.domain.User;
+import cat.udl.eps.softarch.demo.exception.UnauthorizedException;
 import cat.udl.eps.softarch.demo.repository.RequestRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import com.jayway.jsonpath.JsonPath;
@@ -47,10 +48,16 @@ public class RetrieveRequestStepDefs {
                         get("/requests")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(AuthenticationStepDefs.authenticate())
+
                 ).andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].requester").value("/users/" + getCurrentUsername()))
+//                .andExpect(status().isOk())
+  //              .andExpect(jsonPath("$[0].requester").value("/users/" + getCurrentUsername()))
         ;
+
+//        if(status().is2xxSuccessful()) {
+//            stepDefs.
+//        }
+
     }
 
     private User getCurrentUser() {
@@ -66,24 +73,40 @@ public class RetrieveRequestStepDefs {
     @And("I see {int} requests")
     public void iSeeRequests(int numRequests) throws Exception {
         User currentUser = getCurrentUser();
+
+        stepDefs.result.andExpect(jsonPath("$[0].requester").value("/users/" + getCurrentUsername()));
+
         List<Request> userRequests = requestRepository.findByRequester(currentUser);
         Assertions.assertEquals(userRequests.size(), numRequests);
         stepDefs.result.andExpect(jsonPath("$", hasSize(numRequests)))
         ;
     }
 
-    @And("This is a fake step")
-    public void thisIsAFakeStep() throws Exception {
+//    @And("This is a fake step")
+//    public void thisIsAFakeStep() throws Exception {
+//
+//        stepDefs.result = stepDefs.mockMvc.perform(
+//
+//                get("/requests")
+//                        .accept(MediaType.APPLICATION_JSON)
+//                        .with(AuthenticationStepDefs.authenticate())
+//                ).andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$[0].requester").value("/users/" + getCurrentUsername()))
+//                ;
+//
+//    }
 
-        stepDefs.result = stepDefs.mockMvc.perform(
-
-                get("/requests")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .with(AuthenticationStepDefs.authenticate())
-                ).andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].requester").value("/users/" + getCurrentUsername()))
-                ;
+    @When("I retrieve requests from user {string}")
+    public void iRetrieveRequestsFromUser(String otherUsername) throws Exception {
 
     }
+
+    @And("I can't see any request")
+    public void iCanTSeeAnyRequest() throws Exception {
+        stepDefs.result.andDo(print());
+        stepDefs.result.andExpect(jsonPath("$").doesNotExist());
+    }
+
+
 }
