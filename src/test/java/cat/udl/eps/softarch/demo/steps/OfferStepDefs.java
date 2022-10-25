@@ -7,7 +7,6 @@ import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,6 +142,30 @@ public class OfferStepDefs {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print())
-                .andExpect(status().isBadRequest());;
+                .andExpect(status().isBadRequest());
+    }
+
+    @Then("I shouldn't be able to modify any offer.")
+    public void iShouldnTBeAbleToModifyAnyOffer() throws Throwable {
+        String name = "test";
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        patch("/offers/{id}", "1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content((new JSONObject().put("name", name)).toString())
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate())
+                ).andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Then("I shouldn't be able to delete any offer.")
+    public void iShouldnTBeAbleToDeleteAnyOffer() throws Throwable {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        delete("/offers/{id}", "1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 }

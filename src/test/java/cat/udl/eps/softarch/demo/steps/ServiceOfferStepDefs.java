@@ -2,7 +2,6 @@ package cat.udl.eps.softarch.demo.steps;
 
 import cat.udl.eps.softarch.demo.domain.ServiceOffer;
 import cat.udl.eps.softarch.demo.domain.User;
-import cat.udl.eps.softarch.demo.repository.OfferRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
@@ -134,5 +133,42 @@ public class ServiceOfferStepDefs {
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Then("I shouldn't be able to create any service offer.")
+    public void iShouldnTBeAbleToCreateAnyServiceOffer() throws Throwable {
+        ServiceOffer newServiceOffer = new ServiceOffer();
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        post("/serviceOffers")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(stepDefs.mapper.writeValueAsString(newServiceOffer))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Then("I shouldn't be able to modify any service offer.")
+    public void iShouldnTBeAbleToModifyAnyServiceOffer() throws Throwable {
+        String time = "1";
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                patch("/serviceOffers/{id}", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content((new JSONObject().put("durationInHours", Integer.parseInt(time))).toString())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(AuthenticationStepDefs.authenticate())
+                ).andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Then("I shouldn't be able to delete any service offer.")
+    public void iShouldnTBeAbleToDeleteAnyServiceOffer() throws Throwable {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        delete("/serviceOffers/{id}", "1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 }
