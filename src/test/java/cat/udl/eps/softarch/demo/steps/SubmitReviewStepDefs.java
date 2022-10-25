@@ -54,6 +54,26 @@ public class SubmitReviewStepDefs {
                 .andDo(print());
     }
 
+    @When("The buyer submits a new review with username {string}, number of stars {int} to a seller with username {string}")
+    public void theBuyerSubmitsANewReviewWithUsernameNumberOfStarsToASellerWithUsername(String buyer, int nStars, String seller) throws Throwable {
+        Review review = new Review();
+        review.setStars(nStars);
+
+        User author = userRepository.findByUsernameContaining(buyer).get(0);
+        review.setAuthor(author);
+
+        User about = userRepository.findByUsernameContaining(seller).get(0);
+        review.setAbout(about);
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+            post("/reviews")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(stepDefs.mapper.writeValueAsString(review))
+                .accept(MediaType.APPLICATION_JSON)
+                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print());
+    }
+
     @And("It has been submitted a review by buyer with username {string}")
     public void itHasBeenSubmittedAReviewByBuyerWithUsername(String author) throws Throwable {
         String id = stepDefs.result.andReturn().getResponse().getHeader("Location");

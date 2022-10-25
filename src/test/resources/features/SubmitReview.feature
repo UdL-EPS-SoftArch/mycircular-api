@@ -13,6 +13,12 @@ Feature: Submit review
     Then The response code is 201
     And It has been submitted a review by buyer with username "user0"
 
+  Scenario: Submit a new review without a message
+    Given I can login with username "user0" and password "password0"
+    When The buyer submits a new review with username "user0", number of stars 5 to a seller with username "user1"
+    Then The response code is 201
+    And It has been submitted a review by buyer with username "user0"
+
   Scenario: Submit a review when I'm not authenticated
     Given I'm not logged in
     When The buyer submits a new review with username "user0", number of stars 5 and message "Great" to a seller with username "user1"
