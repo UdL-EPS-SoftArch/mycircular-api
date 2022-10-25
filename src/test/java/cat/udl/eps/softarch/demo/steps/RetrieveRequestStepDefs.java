@@ -45,9 +45,10 @@ public class RetrieveRequestStepDefs {
         //TODO: para diferenciar entre algo que ya esta creado de cuando el usuario lo crea, puedo poner un post con un .post("/requests").with(anonymous())
         stepDefs.result = stepDefs.mockMvc.perform(
 
-                        get("/requests")
+                        get("/requests", getCurrentUsername())
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(AuthenticationStepDefs.authenticate())
+                                .queryParam("username", getCurrentUsername())
 
                 ).andDo(print())
 //                .andExpect(status().isOk())
