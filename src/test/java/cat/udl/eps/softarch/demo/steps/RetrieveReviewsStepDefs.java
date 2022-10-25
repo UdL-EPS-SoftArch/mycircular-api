@@ -1,12 +1,17 @@
 package cat.udl.eps.softarch.demo.steps;
 
+import cat.udl.eps.softarch.demo.domain.Review;
+import cat.udl.eps.softarch.demo.domain.User;
 import cat.udl.eps.softarch.demo.repository.ReviewRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
 
 import org.springframework.http.MediaType;
 
+
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -77,5 +82,26 @@ public class RetrieveReviewsStepDefs {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print());
+    }
+
+    @And("There is a review with id {int}, number of stars {int} and message {string} from user {string} to user {string}")
+    public void thereIsAReviewWithIdNumberOfStarsAndMessageFromUserToUser(int id, int nStars, String msg, String author, String about) throws Throwable {
+        if(!reviewRepository.existsById(id))
+        {
+            Review review = new Review();
+            review.setId(id);
+            review.setStars(nStars);
+            review.setMessage(msg);
+
+            List<User> authors = userRepository.findByUsernameContaining(author);
+            if(authors.size() != 0)
+                review.setAuthor(authors.get(0));
+
+            List<User> abouts = this.userRepository.findByUsernameContaining(about);
+            if(abouts.size() != 0)
+                review.setAbout(abouts.get(0));
+
+            reviewRepository.save(review);
+        }
     }
 }
