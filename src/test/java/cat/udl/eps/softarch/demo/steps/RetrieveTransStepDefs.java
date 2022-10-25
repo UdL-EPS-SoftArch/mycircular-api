@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -73,13 +74,27 @@ public class RetrieveTransStepDefs {
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print());
     }
-     @When("I list the transactions with id {int}")
-    public void IlistTheTransactionsWithId(int id) throws Exception{
-        stepDefs.result = stepDefs.mockMvc.perform(
-                        get("/transactions/" + id)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .with(AuthenticationStepDefs.authenticate()))
-                .andDo(print());
+    @When("I list the transactions with user {string}")
+    public void IlistTheTransactionsWithUser(String user) throws Exception{
+        long id;
+        List<User> lista = userRepository.findByUsernameContaining("user1");
+        List<Transaction> listaT = (List<Transaction>) transactionRepository.findAll();
+        List<Long> newList = new ArrayList<>();
+        for (Transaction trans : listaT) {
+            if (trans.getBuyer().getUsername().equals(lista.get(0).getUsername())) {
+                newList.add(trans.getId());
+            }
+        }
+
+        for (Long aLong : newList) {
+            id = aLong;
+            stepDefs.result = stepDefs.mockMvc.perform(
+                            get("/transactions/" + id)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .with(AuthenticationStepDefs.authenticate()))
+                    .andDo(print());
+            id++;
+        }
     }
 
 }
