@@ -4,6 +4,7 @@ Feature: Modify review
   Background:
     Given There is a registered user with username "user0" and password "password0" and email "user0@sample.app"
     Given There is a registered user with username "user1" and password "password1" and email "user1@sample.app"
+    Given There is a registered admin with username "admin" and password "password" and email "admin@local.com"
 
   Scenario: Modify number of stars in a review
     Given I can login with username "user0" and password "password0"
@@ -30,6 +31,13 @@ Feature: Modify review
     Given I'm not logged in
     When I modify a review with id 3
     Then The response code is 401
+
+  Scenario: Modify a review as admin
+    Given I can login with username "user0" and password "password0"
+    And I submit new review with username "user0", number of stars 4 and message "Very good!!" to a seller "user1"
+    And I login as "admin" with password "password"
+    When The buyer modifies the last created review with changing message to "Good"
+    Then The response code is 403
 
 
 

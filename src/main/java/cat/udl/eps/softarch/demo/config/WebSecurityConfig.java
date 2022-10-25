@@ -30,9 +30,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
                     .antMatchers(HttpMethod.GET, "/identity").authenticated()
                     .antMatchers(HttpMethod.POST, "/users").anonymous()
                     .antMatchers(HttpMethod.POST, "/users/*").denyAll()
-                    .antMatchers(HttpMethod.POST, "/reviews").authenticated()
-                    .antMatchers(HttpMethod.PATCH, "/reviews/*").authenticated()
-                    .antMatchers(HttpMethod.DELETE, "/reviews/*").authenticated()
+                    .antMatchers(HttpMethod.POST, "/reviews").hasRole("USER")
+                    .antMatchers(HttpMethod.PATCH, "/reviews/*").hasRole("USER")
+                    .antMatchers(HttpMethod.DELETE, "/reviews/*").hasAnyRole("ADMIN", "USER")
                     .antMatchers(HttpMethod.POST, "/messages").authenticated()
                     .antMatchers(HttpMethod.PATCH, "/messages/*").authenticated()
                     .antMatchers(HttpMethod.PUT, "/**/*").authenticated()
@@ -64,5 +64,3 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
             return new SecurityEvaluationContextExtension();
         }
     }
-
-
