@@ -128,18 +128,7 @@ public class RegisterRequestStepDefs {
         offerer.setEmail(offererName + "@gmail.com");
         offer.setOffererUser(offerer);
 
-        //aqui uso el save porque ya existe en nuestro contexto
-//        stepDefs.result = stepDefs.mockMvc.perform(
-//          post("/offers")
-//                  .contentType(MediaType.APPLICATION_JSON)
-//                  .content(stepDefs.mapper.writeValueAsString(offer))
-//                  .accept(MediaType.APPLICATION_JSON)
-//                  .with(AuthenticationStepDefs.authenticate())
-//        ).andDo(print());
-
         offerRepository.save(offer);
-
-
         Assert.assertEquals(1, offerRepository.count());
     }
 
@@ -159,7 +148,6 @@ public class RegisterRequestStepDefs {
         request.setName(name);
         request.setPrice(new BigDecimal(price));
         request.setDescription(description);
-
 
         Optional<User> users = userRepository.findById(requesterName);
         User requester;
@@ -183,8 +171,6 @@ public class RegisterRequestStepDefs {
                                 .with(AuthenticationStepDefs.authenticate())
                 ).andDo(print())
                 .andExpect(status().isCreated());
-
-//        requestRepository.save(request);
 
     }
 
