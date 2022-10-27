@@ -14,36 +14,43 @@ Feature: Retrieve review
     Given I can login with username "user0" and password "password0"
     When I list all the reviews
     Then The response code is 200
+    And The number of reviews are 2
 
   Scenario: Show a review by id as a user
     Given I can login with username "user0" and password "password0"
     When I list the review with id 2
     Then The response code is 200
+    And A review with number of stars 2 and message "Terrible!" is returned
 
   Scenario: Show review by number of stars
     Given  I can login with username "user0" and password "password0"
     When I list the review with number of stars 5
     Then The response code is 200
+    And The number of reviews are 1
 
   Scenario: Show review by message
     Given  I can login with username "user0" and password "password0"
     When I list the review with message "Terrible!"
     Then The response code is 200
+    And The number of reviews are 1
 
   Scenario: Show all reviews for one user
     Given I can login with username "user0" and password "password0"
     When I list all reviews for user "user0"
     Then The response code is 200
+    And The number of reviews are 1
 
   Scenario: Show all reviews that one user has made
     Given I can login with username "user0" and password "password0"
     When I list all reviews that user "user1" has already made
     Then The response code is 200
+    And The number of reviews are 1
 
   Scenario: List all reviews as admin
     Given I can login with username "admin" and password "password"
     When I list all the reviews
     Then The response code is 200
+    And The number of reviews are 2
 
 
 

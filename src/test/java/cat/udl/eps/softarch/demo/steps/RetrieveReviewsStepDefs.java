@@ -13,8 +13,11 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 public class RetrieveReviewsStepDefs {
 
@@ -42,7 +45,7 @@ public class RetrieveReviewsStepDefs {
     @When("I list the review with id {int}")
     public void iListTheReviewWithId(int id) throws Throwable {
         stepDefs.result = stepDefs.mockMvc.perform(
-                        get("/reviews/" + id)
+                        get("/reviews/{id}", id)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print());
@@ -103,5 +106,17 @@ public class RetrieveReviewsStepDefs {
 
             reviewRepository.save(review);
         }
+    }
+
+    @And("The number of reviews are {int}")
+    public void theNumberOfReviewsAre(int reviewsLength) throws Exception {
+        stepDefs.result.andExpect(jsonPath("$._embedded.reviews", hasSize(reviewsLength)));
+    }
+
+    @And("A review with number of stars {int} and message {string} is returned")
+    public void aReviewWithNumberOfStarsAndMessageIsReturned(int nStars, String message) throws Exception {
+        stepDefs.result
+                .andExpect(jsonPath("$.stars", equalTo(nStars)))
+                .andExpect(jsonPath("$.message", equalTo(message)));
     }
 }
