@@ -51,6 +51,7 @@ public class RetrieveTransStepDefs {
         Long lid = (long) id;
         if (!transactionRepository.existsById(lid)) {
             Transaction transaction = new Transaction();
+            transaction.setId(lid);
 
             List<User> userbuyer = userRepository.findByUsernameContaining(buyer);
             if (userbuyer.size() != 0)
@@ -79,9 +80,16 @@ public class RetrieveTransStepDefs {
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print());
     }
-    @When("I list the transactions with user {string}")
+    @When("I list the transactions with buyer {string}")
     public void IlistTheTransactionsWithUser(String user) throws Exception{
-        long id;
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/transactions/search/findByBuyer_Username?username={username}", user)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print());
+
+
+        /*long id;
         List<User> lista = userRepository.findByUsernameContaining(user);
         List<Transaction> listaT = (List<Transaction>) transactionRepository.findAll();
         List<Long> newList = new ArrayList<>();
@@ -98,7 +106,7 @@ public class RetrieveTransStepDefs {
                                     .accept(MediaType.APPLICATION_JSON)
                                     .with(AuthenticationStepDefs.authenticate()))
                     .andDo(print());
-        }
+        }*/
     }
     @When("I list the transactions with id {int}")
     public void IlistTheTransactionsWithId(int id) throws Exception {

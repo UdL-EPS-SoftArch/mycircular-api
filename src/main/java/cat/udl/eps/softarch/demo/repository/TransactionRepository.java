@@ -17,4 +17,6 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
    * Additional methods following the syntax defined in
    * https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation
    */
+
+    List<Transaction> findByBuyer_Username(@Param("username") String username);
 }
