@@ -2,6 +2,7 @@ package cat.udl.eps.softarch.demo.steps;
 
 import cat.udl.eps.softarch.demo.domain.Transaction;
 import cat.udl.eps.softarch.demo.domain.User;
+import cat.udl.eps.softarch.demo.repository.AnnouncementRepository;
 import cat.udl.eps.softarch.demo.repository.TransactionRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
@@ -27,6 +28,9 @@ public class RetrieveTransStepDefs {
     String newResourceUri;
     @Autowired
     private TransactionRepository transactionRepository;
+
+    @Autowired
+    private AnnouncementRepository announcementRepository;
     @Autowired
     private StepDefs stepDefs;
 
@@ -42,8 +46,8 @@ public class RetrieveTransStepDefs {
                 .andDo(print());
     }*/
 
-    @And("There is a transaction created with id {int} Buyer {string} and Seller {string}")
-    public void thereIsATransactionCreatedWithIdIntBuyerStringAndSellerString(int id, String buyer, String seller) throws Exception{
+    @And("There is a transaction created with id {int} Buyer {string} and Seller {string} and announcement {int}")
+    public void thereIsATransactionCreatedWithIdIntBuyerStringAndSellerString(int id, String buyer, String seller, int announcementId) throws Exception{
         Long lid = (long) id;
         if (!transactionRepository.existsById(lid)) {
             Transaction transaction = new Transaction();
@@ -63,6 +67,7 @@ public class RetrieveTransStepDefs {
             if (transaction.getStatus() == null) {
                 transaction.setStatus(Transaction.StatusTypes.INITIALIZED);
             }
+            transaction.setAnnouncementAbout(announcementRepository.findById(announcementId).get(0));
             transactionRepository.save(transaction);
         }
     }

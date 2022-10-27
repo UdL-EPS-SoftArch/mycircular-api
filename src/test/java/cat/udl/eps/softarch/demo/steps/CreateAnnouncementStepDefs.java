@@ -1,6 +1,7 @@
 package cat.udl.eps.softarch.demo.steps;
 
 import cat.udl.eps.softarch.demo.domain.Announcement;
+import cat.udl.eps.softarch.demo.repository.AnnouncementRepository;
 import io.cucumber.java.en.And;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,26 +13,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 public class CreateAnnouncementStepDefs {
 
+    @Autowired
+    AnnouncementRepository announcementRepository;
+
     String newResourceUri;
+
     @Autowired
     private StepDefs stepDefs;
 
 
 
-    @And("There is an announcement with name {string}, description {string}, price {string}")
-    public void thereIsAnAnnouncementWithNameDescriptionPrice(String name, String description, String strPrice) throws Exception {
+    @And("There is an announcement with id {int}, name {string}, description {string} and price {double}")
+    public void thereIsAnAnnouncementWithNameDescriptionPrice(Integer id, String name, String description, Double price) {
         Announcement announcement = new Announcement();
+        announcement.setId(Long.valueOf(id));
         announcement.setName(name);
         announcement.setDescription(description);
-        BigDecimal price = new BigDecimal(strPrice);
-        announcement.setPrice(price);
-        stepDefs.result = stepDefs.mockMvc.perform(
-                post("/announcements")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(stepDefs.mapper.writeValueAsString(announcement))
-                        .accept(MediaType.APPLICATION_JSON)
-                        .with(AuthenticationStepDefs.authenticate()))
-                .andDo(print());
-        newResourceUri = stepDefs.result.andReturn().getResponse().getHeader("Location");
+        announcement.setPrice(BigDecimal.valueOf(price));
+        announcementRepository.save(announcement);
     }
 }
