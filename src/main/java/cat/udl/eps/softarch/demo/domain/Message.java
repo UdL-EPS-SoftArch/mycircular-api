@@ -31,5 +31,8 @@ public class Message extends UriEntity<Long> {
 
     @ManyToOne
     @JsonIdentityReference(alwaysAsId = true)
-    private User author;
+    private Announcement product;
+    @ManyToOne
+    @JsonIdentityReference(alwaysAsId = true)
+    private User user;
 }
