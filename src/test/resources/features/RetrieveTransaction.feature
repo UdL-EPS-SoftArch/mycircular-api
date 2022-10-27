@@ -11,10 +11,11 @@ Feature: Retrieve Transaction
     And There is a transaction created with id 1 Buyer "user1" and Seller "user2" and announcement 1
     And There is a transaction created with id 1 Buyer "user2" and Seller "user1" and announcement 2
 
-  Scenario: List all transactions as an admin
+#    TODO: Revisar que solo pueda ver todas las transacciones el admin
+  Scenario: List all transactions as an user is forbidden
     Given I can login with username "user1" and password "password"
     When I list the transactions of all users
-    Then The response code is 200
+    Then The response code is 403
 
   Scenario: List all transactions with a user
     Given I can login with username "user1" and password "password"
