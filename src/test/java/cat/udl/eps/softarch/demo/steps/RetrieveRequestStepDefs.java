@@ -2,6 +2,7 @@ package cat.udl.eps.softarch.demo.steps;
 
 import cat.udl.eps.softarch.demo.domain.Request;
 import cat.udl.eps.softarch.demo.domain.User;
+import cat.udl.eps.softarch.demo.exception.NotFoundException;
 import cat.udl.eps.softarch.demo.exception.UnauthorizedException;
 import cat.udl.eps.softarch.demo.repository.RequestRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
@@ -51,13 +52,7 @@ public class RetrieveRequestStepDefs {
                                 .queryParam("username", getCurrentUsername())
 
                 ).andDo(print())
-//                .andExpect(status().isOk())
-  //              .andExpect(jsonPath("$[0].requester").value("/users/" + getCurrentUsername()))
         ;
-
-//        if(status().is2xxSuccessful()) {
-//            stepDefs.
-//        }
 
     }
 
@@ -71,41 +66,53 @@ public class RetrieveRequestStepDefs {
         return AuthenticationStepDefs.currentUsername;
     }
 
-    @And("I see {int} requests")
-    public void iSeeRequests(int numRequests) throws Exception {
-        User currentUser = getCurrentUser();
+    private User getOtherUser(String username) {
+        Optional<User> users = userRepository.findById(username);
+        if(users.isPresent()) {
+            return users.get();
+        }
+        throw new NotFoundException();
+    }
 
-        stepDefs.result.andExpect(jsonPath("$[0].requester").value("/users/" + getCurrentUsername()));
+    @And("I see {int} requests from {string}")
+    public void iSeeRequestsFrom(int numRequests, String username) throws Exception {
 
-        List<Request> userRequests = requestRepository.findByRequester(currentUser);
+        ResultActions userPetitionResult = stepDefs.result;
+
+        String currentUsername = getCurrentUsername();
+        User user;
+
+        if(currentUsername.equals(username)) {
+            user = getCurrentUser();
+        } else {
+            user = getOtherUser(username);
+        }
+
+        userPetitionResult.andExpect(jsonPath("$[0].requester").value("/users/" + getCurrentUsername()));
+
+        List<Request> userRequests = requestRepository.findByRequester(user);
         Assertions.assertEquals(userRequests.size(), numRequests);
         stepDefs.result.andExpect(jsonPath("$", hasSize(numRequests)))
         ;
     }
 
-//    @And("This is a fake step")
-//    public void thisIsAFakeStep() throws Exception {
-//
-//        stepDefs.result = stepDefs.mockMvc.perform(
-//
-//                get("/requests")
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .with(AuthenticationStepDefs.authenticate())
-//                ).andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[0].requester").value("/users/" + getCurrentUsername()))
-//                ;
-//
-//    }
-
     @When("I retrieve requests from user {string}")
     public void iRetrieveRequestsFromUser(String otherUsername) throws Exception {
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+
+                get("/requests", otherUsername)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(AuthenticationStepDefs.authenticate())
+                        .queryParam("username", otherUsername)
+
+        ).andDo(print())
+        ;
 
     }
 
     @And("I can't see any request")
     public void iCanTSeeAnyRequest() throws Exception {
-        stepDefs.result.andDo(print());
         stepDefs.result.andExpect(jsonPath("$").doesNotExist());
     }
 
