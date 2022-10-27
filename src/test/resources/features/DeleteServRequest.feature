@@ -1,4 +1,7 @@
 Feature: Delete a Request
+  In order to use the app
+  As a user
+  I want to delete service requests
 
   Background:
     Given There is a registered user with username "user" and password "password" and email "user@sample.app"
