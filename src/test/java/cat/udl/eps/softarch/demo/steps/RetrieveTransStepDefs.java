@@ -77,7 +77,7 @@ public class RetrieveTransStepDefs {
     @When("I list the transactions with user {string}")
     public void IlistTheTransactionsWithUser(String user) throws Exception{
         long id;
-        List<User> lista = userRepository.findByUsernameContaining("user1");
+        List<User> lista = userRepository.findByUsernameContaining(user);
         List<Transaction> listaT = (List<Transaction>) transactionRepository.findAll();
         List<Long> newList = new ArrayList<>();
         for (Transaction trans : listaT) {
@@ -93,7 +93,6 @@ public class RetrieveTransStepDefs {
                                     .accept(MediaType.APPLICATION_JSON)
                                     .with(AuthenticationStepDefs.authenticate()))
                     .andDo(print());
-            id++;
         }
     }
     @When("I list the transactions with id {int}")
