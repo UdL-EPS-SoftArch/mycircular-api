@@ -88,7 +88,7 @@ public class RetrieveRequestStepDefs {
             user = getOtherUser(username);
         }
 
-        userPetitionResult.andExpect(jsonPath("$[0].requester").value("/users/" + getCurrentUsername()));
+        userPetitionResult.andExpect(jsonPath("$[0].requester").value("/users/" + user.getUsername()));
 
         List<Request> userRequests = requestRepository.findByRequester(user);
         Assertions.assertEquals(userRequests.size(), numRequests);
