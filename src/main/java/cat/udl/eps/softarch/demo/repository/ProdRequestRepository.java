@@ -12,4 +12,5 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface ProdRequestRepository extends PagingAndSortingRepository<ProdRequest, Long> {
+    List<Request> findByRequester(@Param("requester") User requester);
 }

@@ -126,7 +126,7 @@ public class RegisterRequestStepDefs {
         offerer.setUsername(offererName);
         offerer.setPassword("password");
         offerer.setEmail(offererName + "@gmail.com");
-        offer.setOffererUser(offerer);
+        offer.setOfferer(offerer);
 
         offerRepository.save(offer);
         Assert.assertEquals(1, offerRepository.count());
