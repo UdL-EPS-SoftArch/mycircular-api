@@ -5,19 +5,10 @@ import cat.udl.eps.softarch.demo.repository.OfferRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import cat.udl.eps.softarch.demo.domain.Offer;
-import cat.udl.eps.softarch.demo.repository.OfferRepository;
-import cat.udl.eps.softarch.demo.repository.UserRepository;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import org.json.JSONObject;
 import org.junit.Assert;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -88,15 +79,100 @@ public class CounterOfferStepDefs {
                 .andDo(print());
     }
 
-    @And("After all the steps I can retrieve this counter offer which should have the name {string}.")
-    public void afterAllTheStepsICanRetrieveThisCounterOfferWhichShouldHaveTheName(String counterOfferPrice) throws Throwable{
+
+    @And("After all the steps I can retrieve this counter offer which should have the counter offer price of {string}.")
+    public void afterAllTheStepsICanRetrieveThisCounterOfferWhichShouldHaveTheCounterOfferPriceOf(
+            String counterOfferPrice) throws Throwable{
         stepDefs.result = stepDefs.mockMvc.perform(
                         get("/counterOffers/{id}", "1")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print())
-                .andExpect(jsonPath("$.counterOfferPrice", is(counterOfferPrice)))
+                //The database has a BigDecimal but the JSON for some reason interprets the counterOfferPrice
+                //as a Double. That's why we needed to cast to double.
+                .andExpect(jsonPath("$.counterOfferPrice", is(new Double(counterOfferPrice))))
                 .andExpect(status().isOk());
+    }
+
+    @Then("I want to modify this Counter offer product name to {string}.")
+    public void iWantToModifyThisCounterOfferProductNameTo(String name) throws Throwable {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        patch("/counterOffers/{id}", "1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content((new JSONObject().put("name", name)).toString())
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate())
+                ).andDo(print())
+                .andExpect(jsonPath("$.name", is(name)));
+    }
+
+    @And("After all the steps I can retrieve this counter offer which should have the counter offer name of {string}.")
+    public void afterAllTheStepsICanRetrieveThisCounterOfferWhichShouldHaveTheCounterOfferNameOf(String name)
+            throws Throwable {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/counterOffers/{id}", "1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(jsonPath("$.name", is(name)))
+                .andExpect(status().isOk());
+    }
+
+    @Then("I want to delete the Counter offer with id {string}.")
+    public void iWantToDeleteTheCounterOfferWithId(String id) throws Throwable {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        delete("/counterOffers/{id}", id)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print());
+    }
+
+    @And("I want to check that the Counter offer doesn't exist anymore.")
+    public void iWantToCheckThatTheCounterOfferDoesnTExistAnymore() throws Throwable {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/counterOffers/{id}", "1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Then("I shouldn't be able to create any Counter offer.")
+    public void iShouldnTBeAbleToCreateAnyCounterOffer() throws Throwable {
+        CounterOffer newCounterOffer = new CounterOffer();
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        post("/counterOffers")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(stepDefs.mapper.writeValueAsString(newCounterOffer))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Then("I shouldn't be able to modify any counter offer.")
+    public void iShouldnTBeAbleToModifyAnyCounterOffer() throws Throwable {
+        String name = "test";
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        patch("/counterOffers/{id}", "1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content((new JSONObject().put("name", name)).toString())
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate())
+                ).andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Then("I shouldn't be able to delete any Counter offer.")
+    public void iShouldnTBeAbleToDeleteAnyCounterOffer() throws Throwable {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        delete("/counterOffers/{id}", "1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 
 }
