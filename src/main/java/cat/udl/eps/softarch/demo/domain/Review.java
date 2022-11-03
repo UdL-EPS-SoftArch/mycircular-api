@@ -2,7 +2,6 @@ package cat.udl.eps.softarch.demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -12,12 +11,14 @@ import javax.validation.constraints.NotNull;
 
 import java.time.ZonedDateTime;
 
-
 @Entity
 @Data
-@EqualsAndHashCode(callSuper = false)
-public class Review {
 
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"authorId", "aboutId"})
+})
+
+public class Review {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private int id;
@@ -25,20 +26,22 @@ public class Review {
     private ZonedDateTime when = ZonedDateTime.now();
 
     @NotNull(message = "Must provide a valid number of stars in your review")
-    @Min(1)
-    @Max(5)
+    @Min(value = 1, message = "The number of stars must be greater than or equal 1")
+    @Max(value = 5, message = "The number of stars must be less than or equal 5")
     private Integer stars;
 
     @Length(max = 256)
     private String message;
 
     @ManyToOne
-    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
+    @JoinColumn(name = "authorId")
+    @NotNull
     private User author;
 
     @ManyToOne
-    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
+    @JoinColumn(name = "aboutId")
+    @NotNull
     private User about;
 }
