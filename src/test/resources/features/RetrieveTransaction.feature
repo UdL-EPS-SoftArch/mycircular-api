@@ -16,12 +16,14 @@ Feature: Retrieve Transaction
     When I list the transactions of all users
     Then The response code is 403
 
-  Scenario: List all transactions with a user
+  Scenario: List all transactions with a buyer username
     Given I can login with username "user1" and password "password"
-    When I list the transactions with buyer "user2"
+    When I list the transactions with buyer "user1"
     And The number of transactions is 1
 
-  Scenario: List a certain transaction of a user
+  Scenario: List all transactions with forbidden buyer username
     Given I can login with username "user1" and password "password"
-    When I list the transactions with id 1
-    Then The response code is 200
+    When I list the transactions with buyer "user2"
+    And The number of transactions is 0
+
+
