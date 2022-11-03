@@ -2,7 +2,6 @@ package cat.udl.eps.softarch.demo.steps;
 
 import cat.udl.eps.softarch.demo.domain.ProductOffer;
 import cat.udl.eps.softarch.demo.domain.User;
-import cat.udl.eps.softarch.demo.repository.OfferRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
@@ -140,4 +139,41 @@ public class ProductOfferStepDefs {
     }
 
 
+    @Then("I shouldn't be able to create any product offer.")
+    public void iShouldnTBeAbleToCreateAnyProductOffer() throws Throwable {
+        ProductOffer newProductOffer = new ProductOffer();
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        post("/productOffers")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(stepDefs.mapper.writeValueAsString(newProductOffer))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Then("I shouldn't be able to modify any product offer.")
+    public void iShouldnTBeAbleToModifyAnyProductOffer() throws Throwable {
+        String brandName = "test brand";
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                patch("/productOffers/{id}", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content((new JSONObject().put("brand", brandName)).toString())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(AuthenticationStepDefs.authenticate())
+                ).andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Then("I shouldn't be able to delete any product offer.")
+    public void iShouldnTBeAbleToDeleteAnyProductOffer() throws Throwable {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        delete("/productOffers/{id}", "1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
 }
