@@ -3,19 +3,13 @@ package cat.udl.eps.softarch.demo.steps;
 import cat.udl.eps.softarch.demo.domain.*;
 import cat.udl.eps.softarch.demo.repository.AnnouncementRepository;
 import cat.udl.eps.softarch.demo.repository.MessageRepository;
-import cat.udl.eps.softarch.demo.repository.ProductOfferRepository;
-import cat.udl.eps.softarch.demo.repository.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import org.json.JSONObject;
-import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,8 +25,6 @@ public class MessageStepDefs {
     private StepDefs stepDefs;
     @Autowired
     private MessageRepository messageRepository;
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private AnnouncementRepository announcementRepository;
 
@@ -50,7 +42,6 @@ public class MessageStepDefs {
         Message message = new Message();
 
 
-        //message.setId(ident);
         message.setWhen(dated);
         message.setText(text);
 
@@ -62,35 +53,6 @@ public class MessageStepDefs {
                         .accept(MediaType.APPLICATION_JSON)
                         .with(AuthenticationStepDefs.authenticate())).andDo(print());
     }
-
-
-    //Comprovar que missatge ha agafat el Product Offer a la seua taula
-    @And("The Message is associated with the Product Offer {string}")
-    public void theMessageIsAssociatedWithTheProductOffer(String  product) throws Exception {
-        String ids = stepDefs.result.andReturn().getResponse().getHeader("Location");
-        assert ids != null;
-        stepDefs.result = stepDefs.mockMvc.perform(
-                        get(ids)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .with(AuthenticationStepDefs.authenticate()))
-                .andDo(print())
-                .andExpect(status().isOk());
-        JSONObject response = new JSONObject(stepDefs.result.andReturn().getResponse().getContentAsString());
-        String productByHref = response.getJSONObject("_links").getJSONObject("product").getString("href");
-        assertProvidedByEqualsToExpectedProduct(productByHref,product);
-
-    }
-
-    private void assertProvidedByEqualsToExpectedProduct(String productByHref, String product) throws Exception{
-        stepDefs.mockMvc.perform(
-          get(productByHref)
-                  .accept(MediaType.APPLICATION_JSON)
-                  .with(AuthenticationStepDefs.authenticate())
-        )
-                .andDo(print())
-                .andExpect(jsonPath("$.name", is(product)));
-    }
-
     @When("I send a message with date {string}, text {string} and for {string}")
     public void iSendAMessageWithDateTextAndFor(String date, String text, String product) throws Exception {
         ZonedDateTime dated = ZonedDateTime.parse(date);
@@ -98,7 +60,6 @@ public class MessageStepDefs {
         List<Announcement> offer = announcementRepository.findByName(product);
 
 
-        //message.setId(ident);
         message.setWhen(dated);
         message.setText(text);
         message.setProduct(offer.get(0));
@@ -114,4 +75,38 @@ public class MessageStepDefs {
     }
 
 
+    @And("The Message is associated with the Product Offer {string} and user {string}")
+    public void theMessageIsAssociatedWithTheProductOfferAndUser(String product, String user) throws Exception {
+        String ids = stepDefs.result.andReturn().getResponse().getHeader("Location");
+        assert ids != null;
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get(ids)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isOk());
+        JSONObject response = new JSONObject(stepDefs.result.andReturn().getResponse().getContentAsString());
+        String productByHref = response.getJSONObject("_links").getJSONObject("product").getString("href");
+        String userByHref = response.getJSONObject("_links").getJSONObject("user").getString("href");
+        assertProvidedByEqualsToExpectedProduct(productByHref,product);
+        assertProvidedByEqualsToExpectedUser(userByHref,user);
+    }
+    private void assertProvidedByEqualsToExpectedProduct(String productByHref, String product) throws Exception{
+        stepDefs.mockMvc.perform(
+                        get(productByHref)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate())
+                )
+                .andDo(print())
+                .andExpect(jsonPath("$.name", is(product)));
+    }
+    private void assertProvidedByEqualsToExpectedUser(String userByHref, String user) throws Exception{
+        stepDefs.mockMvc.perform(
+                        get(userByHref)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate())
+                )
+                .andDo(print())
+                .andExpect(jsonPath("$.id", is(user)));
+    }
 }

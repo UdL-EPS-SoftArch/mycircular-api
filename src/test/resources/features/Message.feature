@@ -6,7 +6,11 @@ Feature: Message
   Background:
     Given There is a registered user with username "send1" and password "password" and email "send1@circule.cat"
     Given There is a registered user with username "prod1" and password "password" and email "prod1@circule.cat"
-    #El que rep el missatge
+    Given I login as "prod1" with password "password"
+    Then The product offer should be created.
+    And the product offer has a name "product1", description "product description" and a price "10".
+    And the product offer has a ZoneDateTime "2018-02-12T12:08:23Z" and a offerer user "prod1"
+    And a manufacturer "manufacturer1" a band "brand1" and a product code "X-01"
 
   Scenario: Send a message without being logged in
     Given I'm not logged in
@@ -20,17 +24,11 @@ Feature: Message
     When I send a message with date "2022-04-12T12:08:23Z", text "Hello"
     Then The response code is 201
 
-  Scenario: For an Announcement create a Message
-    Given I login as "prod1" with password "password"
-    Then The product offer should be created.
-    And the product offer has a name "product1", description "product description" and a price "10".
-    And the product offer has a ZoneDateTime "2018-02-12T12:08:23Z" and a offerer user "prod1"
-    And a manufacturer "manufacturer1" a band "brand1" and a product code "X-01"
+  Scenario: Send a message while logged in and sent to Announcement
     Given I login as "send1" with password "password"
     When I send a message with date "2022-04-12T12:08:23Z", text "Hello" and for "product1"
-    And The Message is associated with the Product Offer "product1"
-
-
+    And The Message is associated with the Product Offer "product1" and user "send1"
+    Then The response code is 200
 
   Scenario: Send an empty message while logged in
     Given I login as "send1" with password "password"
