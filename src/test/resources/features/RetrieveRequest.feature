@@ -40,7 +40,3 @@ Feature: Retrieve a Request
     Then The response code is 401
     And I can't see any request
 
-  Scenario: fake test
-    Given There is a registered user with username "prueba1" and password "password" and email "caca@gmail.com"
-    When I register a new user with username "prueba1", email "password2" and password "caca2gmail.com"
-    Then The response code is 403
