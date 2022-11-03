@@ -26,11 +26,9 @@ Feature: Message
     And the product offer has a name "product1", description "product description" and a price "10".
     And the product offer has a ZoneDateTime "2018-02-12T12:08:23Z" and a offerer user "prod1"
     And a manufacturer "manufacturer1" a band "brand1" and a product code "X-01"
-
-  Scenario: Send a message for product without being logged in and
     Given I login as "send1" with password "password"
-    When I send a message with date "2022-04-12T12:08:23Z", text "Hello" and for 1
-    # The Message is associated with the Product Offer 1
+    When I send a message with date "2022-04-12T12:08:23Z", text "Hello" and for "product1"
+    And The Message is associated with the Product Offer "product1"
 
 
 
