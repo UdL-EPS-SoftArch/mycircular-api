@@ -70,6 +70,7 @@ public class DeleteRequestStepDefs {
         offerer.setPassword("password");
         offerer.setEmail("Paco" + "@gmail.com");
         offer.setOfferer(offerer);
+        userRepository.save(offerer);
 
         offerRepository.save(offer);
         Assert.assertEquals(1, offerRepository.count());

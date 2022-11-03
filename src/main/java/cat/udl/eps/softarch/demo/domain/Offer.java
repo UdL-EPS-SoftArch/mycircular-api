@@ -16,7 +16,7 @@ public class Offer extends Announcement {
 
     private ZonedDateTime dateTime;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JsonIdentityReference(alwaysAsId = true)
     private User offerer;
 
