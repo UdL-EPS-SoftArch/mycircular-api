@@ -95,4 +95,13 @@ public class RetrieveTransStepDefs {
     public void theNumberOfTransactionsIs(int numTrans) throws Exception {
         stepDefs.result.andExpect(jsonPath("$._embedded.transactions", hasSize(numTrans)));
     }
+
+    @When("I list the transactions with seller {string}")
+    public void iListTheTransactionsWithSeller(String username) throws Exception {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        get("/transactions/search/findBySeller_Username?username={username}", username)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print());
+    }
 }

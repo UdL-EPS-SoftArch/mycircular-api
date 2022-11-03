@@ -22,4 +22,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
 
     @PostFilter("filterObject.buyer.username == authentication.principal.username")
     List<Transaction> findByBuyer_Username(@Param("username") String username);
+
+    @PostFilter("filterObject.seller.username == authentication.principal.username")
+    List<Transaction> findBySeller_Username(@Param("username") String username);
 }

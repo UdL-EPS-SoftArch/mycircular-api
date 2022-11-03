@@ -26,4 +26,12 @@ Feature: Retrieve Transaction
     When I list the transactions with buyer "user2"
     And The number of transactions is 0
 
+  Scenario: List all transactions with a seller username
+    Given I can login with username "user1" and password "password"
+    When I list the transactions with seller "user1"
+    And The number of transactions is 1
 
+  Scenario: List all transactions with forbidden seller username
+    Given I can login with username "user1" and password "password"
+    When I list the transactions with seller "user2"
+    And The number of transactions is 0
