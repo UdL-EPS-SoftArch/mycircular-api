@@ -11,7 +11,6 @@ Feature: Retrieve Transaction
     And There is a transaction created with id 1 Buyer "user1" and Seller "user2" and announcement 1
     And There is a transaction created with id 2 Buyer "user2" and Seller "user1" and announcement 2
 
-#    TODO: Revisar que solo pueda ver todas las transacciones el admin
   Scenario: List all transactions as an user is forbidden
     Given I can login with username "user1" and password "password"
     When I list the transactions of all users
@@ -20,7 +19,7 @@ Feature: Retrieve Transaction
   Scenario: List all transactions with a user
     Given I can login with username "user1" and password "password"
     When I list the transactions with buyer "user2"
-    Then The response code is 200
+    And The number of transactions is 1
 
   Scenario: List a certain transaction of a user
     Given I can login with username "user1" and password "password"

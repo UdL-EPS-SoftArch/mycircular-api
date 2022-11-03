@@ -18,6 +18,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -37,14 +38,6 @@ public class RetrieveTransStepDefs {
     @Autowired
     private UserRepository userRepository;
 
-   /* @When("I list the transactions for an User {String}")
-    public void iListTheTranascitonsForAnUser(String user) throws Exception {
-        stepDefs.result = stepDefs.mockMvc.perform(
-                        get("/reviews/{about}", user)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .with(AuthenticationStepDefs.authenticate()))
-                .andDo(print());
-    }*/
 
     @And("There is a transaction created with id {int} Buyer {string} and Seller {string} and announcement {int}")
     public void thereIsATransactionCreatedWithIdIntBuyerStringAndSellerString(int id, String buyer, String seller, int announcementId) throws Exception{
@@ -88,25 +81,6 @@ public class RetrieveTransStepDefs {
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print());
 
-
-        /*long id;
-        List<User> lista = userRepository.findByUsernameContaining(user);
-        List<Transaction> listaT = (List<Transaction>) transactionRepository.findAll();
-        List<Long> newList = new ArrayList<>();
-        for (Transaction trans : listaT) {
-            if (trans.getBuyer().getUsername().equals(lista.get(0).getUsername())) {
-                newList.add(trans.getId());
-            }
-        }
-
-        for (Long aLong : newList) {
-            id = aLong;
-            stepDefs.result = stepDefs.mockMvc.perform(
-                            get("/transactions/" + id)
-                                    .accept(MediaType.APPLICATION_JSON)
-                                    .with(AuthenticationStepDefs.authenticate()))
-                    .andDo(print());
-        }*/
     }
     @When("I list the transactions with id {int}")
     public void IlistTheTransactionsWithId(int id) throws Exception {
@@ -115,5 +89,10 @@ public class RetrieveTransStepDefs {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print());
+    }
+
+    @And("The number of transactions is {int}")
+    public void theNumberOfTransactionsIs(int numTrans) throws Exception {
+        stepDefs.result.andExpect(jsonPath("$._embedded.transactions", hasSize(numTrans)));
     }
 }
