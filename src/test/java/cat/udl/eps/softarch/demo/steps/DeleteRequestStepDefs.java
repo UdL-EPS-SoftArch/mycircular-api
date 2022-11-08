@@ -1,25 +1,24 @@
 package cat.udl.eps.softarch.demo.steps;
 
 import static org.hamcrest.Matchers.is;
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import cat.udl.eps.softarch.demo.domain.Offer;
 import cat.udl.eps.softarch.demo.domain.Request;
 import cat.udl.eps.softarch.demo.domain.User;
+import cat.udl.eps.softarch.demo.exception.NotFoundException;
 import cat.udl.eps.softarch.demo.repository.OfferRepository;
 import cat.udl.eps.softarch.demo.repository.RequestRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
-import io.cucumber.java.an.E;
 import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.json.JSONObject;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
@@ -28,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class DeleteRequestStepDefs {
 
@@ -91,5 +91,59 @@ public class DeleteRequestStepDefs {
         request.setRequester(requester);
         requestRepository.save(request);
         Assert.assertEquals(1, requestRepository.count());
+    }
+
+    private User getUser(String username) {
+        Optional<User> users = userRepository.findById(username);
+        if(users.isPresent()) {
+            return users.get();
+        }
+        throw new NotFoundException();
+    }
+
+    private Request getRequestByParams(String name, int price, String description, String username) {
+        BigDecimal requestPrice = new BigDecimal(price);
+        User requester = getUser(username);
+
+        List<Request> requestList = requestRepository.findByNameAndPriceAndDescriptionAndRequester(name, requestPrice, description, requester);
+        return requestList.get(0);
+
+    }
+
+    @When("I delete a request with name {string}, price {int}, description {string} by {string}")
+    public void iDeleteARequestWithNamePriceDescriptionBy(String name, int price, String description, String username) throws Exception {
+
+  //      Assertions.assertThrows(NotFoundException.class, () -> {
+            // getRequestByParams(name, price, description, username);
+            Long requestId = getRequestByParams(name, price, description, username).getId();
+
+            stepDefs.result = stepDefs.mockMvc.perform(
+                            delete("/requests/" + requestId)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .with(AuthenticationStepDefs.authenticate()))
+                    .andDo(print());
+//        } );
+
+
+    }
+
+    @And("I want to check that the request with name {string}, price {int}, description {string} by {string} doesn't exist anymore")
+    public void iWantToCheckThatTheRequestWithNamePriceDescriptionByDoesnTExistAnymore(String name, int price, String description, String username) throws Exception {
+
+        Assertions.assertThrows(NotFoundException.class, () -> {
+            Long requestId = getRequestByParams(name, price, description, username).getId();
+
+            //stepDefs.result = stepDefs.mockMvc.perform(
+              //              get("/requests/" + requestId)
+                //                    .accept(MediaType.APPLICATION_JSON)
+                    //                .with(AuthenticationStepDefs.authenticate()))
+                  //  .andDo(print())
+            //;
+
+        });
+
+
+
+
     }
 }
