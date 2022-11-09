@@ -32,10 +32,10 @@ Feature: Retrieve a Service Request
     Given I'm not logged in
     When I retrieve my own created service requests
     Then The response code is 401
-    And I can't see any service request
+    And I'm not allowed to see any request
 
   Scenario: Retrieve other user's service requests but user is not logged in
     Given I'm not logged in
     When I retrieve service requests from user "Antonio"
     Then The response code is 401
-    And I can't see any service request
+    And I'm not allowed to see any request

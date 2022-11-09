@@ -3,7 +3,6 @@ package cat.udl.eps.softarch.demo.steps;
 import cat.udl.eps.softarch.demo.domain.Request;
 import cat.udl.eps.softarch.demo.domain.User;
 import cat.udl.eps.softarch.demo.exception.NotFoundException;
-import cat.udl.eps.softarch.demo.repository.RequestRepository;
 import cat.udl.eps.softarch.demo.repository.ServRequestRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
@@ -93,7 +92,7 @@ public class RetrieveServRequestStepDefs {
 
     @And("I can't see any service request")
     public void iCanTSeeAnyServiceRequest() throws Exception {
-        stepDefs.result.andExpect(jsonPath("$").doesNotExist());
+        stepDefs.result.andExpect(jsonPath("$").isEmpty());
     }
 
     @When("I retrieve service requests from user {string}")
