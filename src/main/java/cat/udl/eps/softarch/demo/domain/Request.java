@@ -1,46 +1,26 @@
 package cat.udl.eps.softarch.demo.domain;
 
 
-import javax.persistence.*;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotEmpty;
-
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.validator.constraints.Length;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import java.time.ZonedDateTime;
+
 
 @Entity
 @Data
-//@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 //@Table(name = "Request")
 
-public class Request {
+public class Request extends Announcement{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private ZonedDateTime dateTime;
 
-    @NotEmpty
-    @Length(min = 2, max = 24)
-    private String name;
-
-    @NotEmpty
-    @DecimalMin(value = "0")
-    private BigDecimal price;
-
-    @NotEmpty
-    @Length(min = 10, max = 200)
-    private String description;
-
-
-    @NotEmpty
-   // @NotBlank
-    // @ForeignKey
-    private String requester;
-
-
-
+//    @NotEmpty
+    @ManyToOne()
+    @JsonIdentityReference(alwaysAsId = true)
+    private User requester;
 }

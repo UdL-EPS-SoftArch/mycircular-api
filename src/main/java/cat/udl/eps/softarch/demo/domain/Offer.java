@@ -8,8 +8,11 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 public class Offer extends Announcement {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    private Long id;
 
     private ZonedDateTime dateTime;
 
