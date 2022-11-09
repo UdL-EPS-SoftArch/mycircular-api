@@ -6,7 +6,7 @@ Feature: AdminTransaction
   Background:
     Given There is a registered user with username "user0" and password "password0" and email "user0@sample.app"
     And I login as "demo" with password "password"
-    And There is an announcement with id 1, name "test1", description "test1" and price 20.00
+    And There is an announcement with id 1, name "test1", description "description for test1" and price 20.00
 
   Scenario: Create new transaction.
     Given I Create a new Transaction with price "20.5", the buyer is "user0", the seller is "demo" and announcement id is 1

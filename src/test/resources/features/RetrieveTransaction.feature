@@ -6,8 +6,8 @@ Feature: Retrieve Transaction
   Background:
     Given There is a registered user with username "user1" and password "password" and email "user0@sample.app"
     Given There is a registered user with username "user2" and password "password" and email "user1@sample.app"
-    And There is an announcement with id 1, name "test1", description "test1" and price 20.00
-    And There is an announcement with id 2, name "test2", description "test2" and price 20.00
+    And There is an announcement with id 1, name "test1", description "description for test1" and price 20.00
+    And There is an announcement with id 2, name "test2", description "description for test2" and price 20.00
     And There is a transaction created with id 1 Buyer "user1" and Seller "user2" and announcement 1
     And There is a transaction created with id 2 Buyer "user2" and Seller "user1" and announcement 2
 
