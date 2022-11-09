@@ -10,6 +10,7 @@ import cat.udl.eps.softarch.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.BasePathAwareController;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -42,9 +43,9 @@ public class RequestController {
 //    }
 
     @Transactional
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/requests")
-    public @ResponseBody void deleteUserRequests(@RequestParam(value = "username", required = false) String username) {
+    public @ResponseBody ResponseEntity<String> deleteUserRequests(@RequestParam(value = "username", required = false) String username) {
         //aqui ya checkeamos que no pueda ser anonymous
         User currentUser = getCurrentUser();
         //si estamos buscando al usuario actual
@@ -53,21 +54,36 @@ public class RequestController {
             //return requestRepository.findByRequester(currentUser);
             System.out.println("usuario: " + currentUser.getUsername());
             requestRepository.deleteByRequester(currentUser);
-            return;
+            return new ResponseEntity<>(username, HttpStatus.NO_CONTENT);
         }
-        //buscamos a otro usuario
-        Optional<User> users = userRepository.findById(username);
+        //ojo, aqui no hay que buscar a otro usuario, porque solo podemos eliminar nuetras propias requests
+//        Optional<User> users = userRepository.findById(username);
         //miramos que exista el otro usuario
-        if (users.isEmpty()) {
-            throw new NotFoundException();
-        }
-        User otherUser = users.get();
+//        if (users.isEmpty()) {
+//            throw new NotFoundException();
+//        }
+//        User otherUser = users.get();
         //borramos las requests de este nuevo usuario
         //return requestRepository.findByRequester(otherUser);
-        requestRepository.deleteByRequester(otherUser);
-        return;
+//        requestRepository.deleteByRequester(otherUser);
+        return new ResponseEntity<>(username, HttpStatus.FORBIDDEN);
     }
 
+    /*
+    @Transactional
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @DeleteMapping("/requests")
+    public @ResponseBody ResponseEntity<String> deleteOtherUserRequests(@RequestParam(value = "username", required = false) String username) {
+        User currentUser = getCurrentUser();
+        //si estamos buscando al usuario actual
+        if (!username.equals(currentUser.getUsername())) {
+            return new ResponseEntity<>(username, HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(username, HttpStatus.OK);//este OK es de prueba
+    }
+    */
+
+//Todo: poner aqui tambien el response entity en lugar de las excepciones.
     @GetMapping("/requests")
     public @ResponseBody List<Request> getOtherUserOwnRequests(@RequestParam(value = "username", required = false) String username) {
 //        System.out.println(username);

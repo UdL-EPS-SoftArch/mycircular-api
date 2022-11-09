@@ -106,6 +106,9 @@ public class DeleteRequestStepDefs {
         User requester = getUser(username);
 
         List<Request> requestList = requestRepository.findByNameAndPriceAndDescriptionAndRequester(name, requestPrice, description, requester);
+        if (requestList.isEmpty()) {
+            throw new NotFoundException();
+        }
         return requestList.get(0);
 
     }
@@ -127,11 +130,11 @@ public class DeleteRequestStepDefs {
 
     }
 
-    @And("I want to check that the request with name {string}, price {int}, description {string} by {string} doesn't exist anymore")
-    public void iWantToCheckThatTheRequestWithNamePriceDescriptionByDoesnTExistAnymore(String name, int price, String description, String username) throws Exception {
+    @And("I want to check that the request with name {string}, price {int}, description {string} by {string} doesn't exist")
+    public void iWantToCheckThatTheRequestWithNamePriceDescriptionByDoesnTExist(String name, int price, String description, String username) throws Exception {
 
         Assertions.assertThrows(NotFoundException.class, () -> {
-            Long requestId = getRequestByParams(name, price, description, username).getId();
+            getRequestByParams(name, price, description, username);
 
             //stepDefs.result = stepDefs.mockMvc.perform(
               //              get("/requests/" + requestId)
@@ -161,5 +164,26 @@ public class DeleteRequestStepDefs {
 
         ).andDo(print())
         ;
+    }
+
+    @When("I delete requests from user {string}")
+    public void iDeleteRequestsFromUser(String username) throws Exception {
+        User otherUser = getUser(username);
+        //Todo: cambiar para cuando el usuario no exista
+        stepDefs.result = stepDefs.mockMvc.perform(
+                delete("/requests", username)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(AuthenticationStepDefs.authenticate())
+                        .queryParam("username", username)
+
+        ).andDo(print())
+        ;
+    }
+
+    @When("I try to delete a request with name {string}, price {int}, description {string} by {string} but I can't")
+    public void iTryToDeleteARequestWithNamePriceDescriptionByButICanT(String name, int price, String description, String username) {
+        Assertions.assertThrows(NotFoundException.class, () -> {
+            getRequestByParams(name, price, description, username);
+        });
     }
 }
