@@ -76,7 +76,6 @@ public class RetrieveProdRequestStepDefs {
 
         ).andDo(print())
         ;
-
     }
 
     @And("I see {int} product request(s) from {string}")
