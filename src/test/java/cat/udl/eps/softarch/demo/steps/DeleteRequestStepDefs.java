@@ -1,12 +1,5 @@
 package cat.udl.eps.softarch.demo.steps;
 
-import static org.hamcrest.Matchers.is;
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
 import cat.udl.eps.softarch.demo.domain.Offer;
 import cat.udl.eps.softarch.demo.domain.Request;
 import cat.udl.eps.softarch.demo.domain.User;
@@ -27,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 public class DeleteRequestStepDefs {
 
@@ -39,6 +32,8 @@ public class DeleteRequestStepDefs {
     private OfferRepository offerRepository;
     @Autowired
     private UserRepository userRepository;
+
+    private Exception e;
 
     @When("I delete a request with id {string}")
     public void iDeleteARequestWithId(String id) throws Exception {
@@ -95,7 +90,7 @@ public class DeleteRequestStepDefs {
 
     private User getUser(String username) {
         Optional<User> users = userRepository.findById(username);
-        if(users.isPresent()) {
+        if (users.isPresent()) {
             return users.get();
         }
         throw new NotFoundException();
@@ -116,8 +111,7 @@ public class DeleteRequestStepDefs {
     @When("I delete a request with name {string}, price {int}, description {string} by {string}")
     public void iDeleteARequestWithNamePriceDescriptionBy(String name, int price, String description, String username) throws Exception {
 
-  //      Assertions.assertThrows(NotFoundException.class, () -> {
-            // getRequestByParams(name, price, description, username);
+        try {
             Long requestId = getRequestByParams(name, price, description, username).getId();
 
             stepDefs.result = stepDefs.mockMvc.perform(
@@ -125,27 +119,15 @@ public class DeleteRequestStepDefs {
                                     .accept(MediaType.APPLICATION_JSON)
                                     .with(AuthenticationStepDefs.authenticate()))
                     .andDo(print());
-//        } );
-
-
+        } catch (NotFoundException Nf) {
+            e = Nf;
+        }
     }
 
     @And("I want to check that the request with name {string}, price {int}, description {string} by {string} doesn't exist")
-    public void iWantToCheckThatTheRequestWithNamePriceDescriptionByDoesnTExist(String name, int price, String description, String username) throws Exception {
+    public void iWantToCheckThatTheRequestWithNamePriceDescriptionByDoesnTExist(String name, int price, String description, String username) {
 
-        Assertions.assertThrows(NotFoundException.class, () -> {
-            getRequestByParams(name, price, description, username);
-
-            //stepDefs.result = stepDefs.mockMvc.perform(
-              //              get("/requests/" + requestId)
-                //                    .accept(MediaType.APPLICATION_JSON)
-                    //                .with(AuthenticationStepDefs.authenticate()))
-                  //  .andDo(print())
-            //;
-
-        });
-
-
+        Assertions.assertThrows(NotFoundException.class, () -> getRequestByParams(name, price, description, username));
 
 
     }
@@ -168,22 +150,29 @@ public class DeleteRequestStepDefs {
 
     @When("I delete requests from user {string}")
     public void iDeleteRequestsFromUser(String username) throws Exception {
-        User otherUser = getUser(username);
-        //Todo: cambiar para cuando el usuario no exista
-        stepDefs.result = stepDefs.mockMvc.perform(
-                delete("/requests", username)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .with(AuthenticationStepDefs.authenticate())
-                        .queryParam("username", username)
+        try {
+            stepDefs.result = stepDefs.mockMvc.perform(
+                    delete("/requests", username)
+                            .accept(MediaType.APPLICATION_JSON)
+                            .with(AuthenticationStepDefs.authenticate())
+                            .queryParam("username", username)
 
-        ).andDo(print())
-        ;
+            ).andDo(print())
+            ;
+        } catch (NotFoundException Nf) {
+            e = Nf;
+        }
+
+
     }
 
     @When("I try to delete a request with name {string}, price {int}, description {string} by {string} but I can't")
     public void iTryToDeleteARequestWithNamePriceDescriptionByButICanT(String name, int price, String description, String username) {
-        Assertions.assertThrows(NotFoundException.class, () -> {
-            getRequestByParams(name, price, description, username);
-        });
+        Assertions.assertThrows(NotFoundException.class, () -> getRequestByParams(name, price, description, username));
+    }
+
+    @Then("It is not found")
+    public void itIsNotFound() {
+        Assertions.assertEquals(NotFoundException.class, e.getClass());
     }
 }

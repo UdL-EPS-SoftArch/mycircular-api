@@ -2,7 +2,6 @@ package cat.udl.eps.softarch.demo.controller;
 
 import cat.udl.eps.softarch.demo.domain.Request;
 import cat.udl.eps.softarch.demo.domain.User;
-import cat.udl.eps.softarch.demo.exception.ForbiddenException;
 import cat.udl.eps.softarch.demo.exception.NotFoundException;
 import cat.udl.eps.softarch.demo.exception.UnauthorizedException;
 import cat.udl.eps.softarch.demo.repository.RequestRepository;
@@ -16,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,16 +54,14 @@ public class RequestController {
             requestRepository.deleteByRequester(currentUser);
             return new ResponseEntity<>(username, HttpStatus.NO_CONTENT);
         }
+
         //ojo, aqui no hay que buscar a otro usuario, porque solo podemos eliminar nuetras propias requests
-//        Optional<User> users = userRepository.findById(username);
+        Optional<User> users = userRepository.findById(username);
         //miramos que exista el otro usuario
-//        if (users.isEmpty()) {
-//            throw new NotFoundException();
-//        }
-//        User otherUser = users.get();
-        //borramos las requests de este nuevo usuario
-        //return requestRepository.findByRequester(otherUser);
-//        requestRepository.deleteByRequester(otherUser);
+        if (users.isEmpty()) {
+            return new ResponseEntity<>(username, HttpStatus.NOT_FOUND);
+        }
+        //si existe el usuario... pues no le dejamos tocar nada suyo.
         return new ResponseEntity<>(username, HttpStatus.FORBIDDEN);
     }
 

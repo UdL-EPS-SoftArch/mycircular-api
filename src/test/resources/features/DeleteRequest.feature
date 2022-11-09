@@ -32,18 +32,22 @@ Feature: Delete a Request
 
   Scenario: Delete request that doesn't exist
   #todo tendria que repetir este test para retrieve
-    When I try to delete a request with name "request inventada", price 37, description "fake request" by "user" but I can't
-    Then There are 2 request created
+    When I delete a request with name "request inventada", price 37, description "fake request" by "user"
+    Then It is not found
+    And There are 2 request created
 
   Scenario: Delete a specific request
     When I delete a request with name "croqueta2", price 100, description "le hago la competencia a la mama" by "user"
     Then The response code is 204
     And I want to check that the request with name "croqueta2", price 100, description "le hago la competencia a la mama" by "user" doesn't exist
-    #Si no hardcodeamos la id, no podemos buscar por atributos porque peta
-    #And The response code is 404
 
   Scenario: Delete requests but user is not logged in
     Given I'm not logged in
     When I delete a request with name "croqueta2", price 100, description "le hago la competencia a la mama" by "user"
     Then The response code is 401
     And I want to check that the request still exist
+
+    Scenario: Delete requests from a non existing user
+      When I delete requests from user "Mondongo"
+      Then The response code is 404
+      And There are 2 request created
