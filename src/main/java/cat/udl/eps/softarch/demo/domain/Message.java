@@ -1,5 +1,6 @@
 package cat.udl.eps.softarch.demo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,4 +29,10 @@ public class Message extends UriEntity<Long> {
     @Length (max =256)
     private String text;
 
+    @ManyToOne
+    @JsonIdentityReference(alwaysAsId = true)
+    private Announcement product;
+    @ManyToOne
+    @JsonIdentityReference(alwaysAsId = true)
+    private User user;
 }
