@@ -52,8 +52,6 @@ public class RequestEventHandler {
 
     @HandleBeforeCreate
     public void handleRequestPreCreate(Request request) {
-        assert request.getId() != null;
-
         String name = request.getName();
         BigDecimal price = request.getPrice();
         String description = request.getDescription();
@@ -61,7 +59,6 @@ public class RequestEventHandler {
         List<Request> requests = requestRepository.findByNameAndPriceAndDescriptionAndRequester(name, price, description, requester);
 
         //TODO: remember que hay algo de fechas
-
 
         if(!requests.isEmpty()) {
             throw new ForbiddenException();
