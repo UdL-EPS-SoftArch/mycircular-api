@@ -130,4 +130,42 @@ public class OfferStepDefs {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
+    @Then("I shouldn't be able to create any offer.")
+    public void iShouldnTBeAbleToCreateAnyOffer() throws Throwable {
+        Offer newOffer = new Offer();
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        post("/offers")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(stepDefs.mapper.writeValueAsString(newOffer))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Then("I shouldn't be able to modify any offer.")
+    public void iShouldnTBeAbleToModifyAnyOffer() throws Throwable {
+        String name = "test";
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        patch("/offers/{id}", "1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content((new JSONObject().put("name", name)).toString())
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate())
+                ).andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Then("I shouldn't be able to delete any offer.")
+    public void iShouldnTBeAbleToDeleteAnyOffer() throws Throwable {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                        delete("/offers/{id}", "1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(AuthenticationStepDefs.authenticate()))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
 }
