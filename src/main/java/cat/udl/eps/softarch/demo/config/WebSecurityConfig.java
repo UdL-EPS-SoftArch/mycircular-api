@@ -38,6 +38,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
                     .antMatchers(HttpMethod.POST, "/productOffers/*").authenticated()
                     .antMatchers(HttpMethod.POST, "/serviceOffers/*").authenticated()
                     .antMatchers(HttpMethod.DELETE, "/requests").authenticated()
+                    .antMatchers(HttpMethod.DELETE, "/prodRequests").authenticated()
+                    .antMatchers(HttpMethod.DELETE, "/servRequests").authenticated()
 
                     .antMatchers(HttpMethod.POST, "/reviews").hasRole("USER")
                     .antMatchers(HttpMethod.PATCH, "/reviews/*").hasRole("USER")

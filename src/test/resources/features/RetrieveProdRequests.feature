@@ -32,10 +32,12 @@ Feature: Retrieve a product Request
     Given I'm not logged in
     When I retrieve my own created product requests
     Then The response code is 401
-    And I can't see any product request
+    #And I can't see any product request
+    And I'm not allowed to see any request
 
   Scenario: Retrieve other user's product requests but user is not logged in
     Given I'm not logged in
     When I retrieve product requests from user "Antonio"
     Then The response code is 401
-    And I can't see any product request
+    #And I can't see any product request
+    And I'm not allowed to see any request

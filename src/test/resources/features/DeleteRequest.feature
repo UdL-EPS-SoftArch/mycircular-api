@@ -33,7 +33,7 @@ Feature: Delete a Request
   Scenario: Delete request that doesn't exist
   #todo tendria que repetir este test para retrieve
     When I delete a request with name "request inventada", price 37, description "fake request" by "user"
-    Then It is not found
+    Then The request is not found
     And There are 2 request created
 
   Scenario: Delete a specific request

@@ -3,29 +3,22 @@ package cat.udl.eps.softarch.demo.steps;
 import cat.udl.eps.softarch.demo.domain.Request;
 import cat.udl.eps.softarch.demo.domain.User;
 import cat.udl.eps.softarch.demo.exception.NotFoundException;
-import cat.udl.eps.softarch.demo.exception.UnauthorizedException;
 import cat.udl.eps.softarch.demo.repository.RequestRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
-import com.jayway.jsonpath.JsonPath;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class RetrieveRequestStepDefs {
 
@@ -116,9 +109,7 @@ public class RetrieveRequestStepDefs {
 
     @And("I can't see any request")
     public void iCanTSeeAnyRequest() throws Exception {
-        //stepDefs.result.andDo(print());
         stepDefs.result.andExpect(jsonPath("$").isEmpty());
-       // stepDefs.result.andExpect(jsonPath("$").doesNotExist());
     }
 
 

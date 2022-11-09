@@ -4,7 +4,6 @@ import cat.udl.eps.softarch.demo.domain.Request;
 import cat.udl.eps.softarch.demo.domain.User;
 import cat.udl.eps.softarch.demo.exception.NotFoundException;
 import cat.udl.eps.softarch.demo.repository.ProdRequestRepository;
-import cat.udl.eps.softarch.demo.repository.ServRequestRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
@@ -80,7 +79,7 @@ public class RetrieveProdRequestStepDefs {
 
     }
 
-    @And("I see {int} product requests from {string}")
+    @And("I see {int} product request(s) from {string}")
     public void iSeeProductRequestsFrom(int numRequests, String username) throws Exception {
 
         ResultActions userPetitionResult = stepDefs.result;
@@ -107,7 +106,7 @@ public class RetrieveProdRequestStepDefs {
     @And("I can't see any product request")
     public void iCanTSeeAnyProductRequest() throws Exception {
 
-        stepDefs.result.andExpect(jsonPath("$").doesNotExist());
+        stepDefs.result.andExpect(jsonPath("$").isEmpty());
 
     }
 }

@@ -8,12 +8,16 @@ import cat.udl.eps.softarch.demo.repository.ProdRequestRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.BasePathAwareController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +50,25 @@ public class ProdRequestController {
 
 
     }
+
+    @Transactional
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/prodRequests")
+    public @ResponseBody ResponseEntity<String> deleteUserRequests(@RequestParam(value = "username", required = false) String username) {
+        //aqui ya checkeamos que no pueda ser anonymous
+        User currentUser = getCurrentUser();
+        if (username.equals(currentUser.getUsername())) {
+            prodRequestRepository.deleteByRequester(currentUser);
+            return new ResponseEntity<>(username, HttpStatus.NO_CONTENT);
+        }
+
+        Optional<User> users = userRepository.findById(username);
+        if (users.isEmpty()) {
+            return new ResponseEntity<>(username, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(username, HttpStatus.FORBIDDEN);
+    }
+
 
     public User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

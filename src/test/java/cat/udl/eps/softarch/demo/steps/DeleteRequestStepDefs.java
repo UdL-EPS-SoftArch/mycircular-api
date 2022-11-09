@@ -171,8 +171,8 @@ public class DeleteRequestStepDefs {
         Assertions.assertThrows(NotFoundException.class, () -> getRequestByParams(name, price, description, username));
     }
 
-    @Then("It is not found")
-    public void itIsNotFound() {
+    @Then("The request is not found")
+    public void theRequestIsNotFound() {
         Assertions.assertEquals(NotFoundException.class, e.getClass());
     }
 }
