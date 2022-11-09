@@ -2,8 +2,24 @@ Feature: Delete a Request
 
   Background:
     Given There is a registered user with username "user" and password "password" and email "user@sample.app"
+    And There is a registered user with username "nene" and password "password" and email "nene@gmail.com"
 
   Scenario: Delete own requests successfully
+    Given I can login with username "user" and password "password"
+    And There is an offer created with name "croqueta2", price 100, description "le hago la competencia a la mama" and offerer named "Paco"
+    And There are 1 offer created
+    And There is a request created with name "croqueta2", price 100, description "gimme dat croquetas" by "user"
+    And There is a request created with name "croquetas 2.0", price 200, description "mama soy tu mayor fan" by "nene"
+    And There are 2 request created
+
+    When I delete my own created requests
+    Then The response code is 204
+
+    When I retrieve my own created requests
+    Then I can't see any request
+
+    When I retrieve requests from user "nene"
+    Then I see 1 request from "nene"
 
 
   Scenario: Delete other user's requests sucessfully

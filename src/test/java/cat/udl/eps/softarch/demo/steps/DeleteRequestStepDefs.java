@@ -146,4 +146,20 @@ public class DeleteRequestStepDefs {
 
 
     }
+
+    private String getCurrentUsername() {
+        return AuthenticationStepDefs.currentUsername;
+    }
+
+    @When("I delete my own created requests")
+    public void iDeleteMyOwnCreatedRequests() throws Exception {
+        stepDefs.result = stepDefs.mockMvc.perform(
+                delete("/requests", getCurrentUsername())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(AuthenticationStepDefs.authenticate())
+                        .queryParam("username", getCurrentUsername())
+
+        ).andDo(print())
+        ;
+    }
 }

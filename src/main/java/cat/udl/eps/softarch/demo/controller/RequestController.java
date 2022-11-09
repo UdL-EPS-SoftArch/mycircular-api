@@ -9,10 +9,12 @@ import cat.udl.eps.softarch.demo.repository.RequestRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.BasePathAwareController;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +40,33 @@ public class RequestController {
 //        User currentUser = getCurrentUser();
 //        return requestRepository.findByRequester(currentUser);
 //    }
+
+    @Transactional
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/requests")
+    public @ResponseBody void deleteUserRequests(@RequestParam(value = "username", required = false) String username) {
+        //aqui ya checkeamos que no pueda ser anonymous
+        User currentUser = getCurrentUser();
+        //si estamos buscando al usuario actual
+        if (username.equals(currentUser.getUsername())) {
+            //borramos las requests del usuario actual
+            //return requestRepository.findByRequester(currentUser);
+            System.out.println("usuario: " + currentUser.getUsername());
+            requestRepository.deleteByRequester(currentUser);
+            return;
+        }
+        //buscamos a otro usuario
+        Optional<User> users = userRepository.findById(username);
+        //miramos que exista el otro usuario
+        if (users.isEmpty()) {
+            throw new NotFoundException();
+        }
+        User otherUser = users.get();
+        //borramos las requests de este nuevo usuario
+        //return requestRepository.findByRequester(otherUser);
+        requestRepository.deleteByRequester(otherUser);
+        return;
+    }
 
     @GetMapping("/requests")
     public @ResponseBody List<Request> getOtherUserOwnRequests(@RequestParam(value = "username", required = false) String username) {

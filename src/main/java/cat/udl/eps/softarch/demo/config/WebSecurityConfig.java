@@ -30,12 +30,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
                     .antMatchers(HttpMethod.GET, "/identity").authenticated()
                     .antMatchers(HttpMethod.POST, "/users").anonymous()
                     .antMatchers(HttpMethod.POST, "/users/*").denyAll()
+
                     .antMatchers(HttpMethod.POST, "/requests").authenticated() //aqui
                     .antMatchers(HttpMethod.POST, "/servRequests").authenticated()
                     .antMatchers(HttpMethod.POST, "/prodRequests").authenticated()
                     .antMatchers(HttpMethod.POST, "/offers/*").authenticated()
                     .antMatchers(HttpMethod.POST, "/productOffers/*").authenticated()
                     .antMatchers(HttpMethod.POST, "/serviceOffers/*").authenticated()
+                    .antMatchers(HttpMethod.DELETE, "/requests").authenticated()
+
                     .antMatchers(HttpMethod.POST, "/reviews").hasRole("USER")
                     .antMatchers(HttpMethod.PATCH, "/reviews/*").hasRole("USER")
                     .antMatchers(HttpMethod.DELETE, "/reviews/*").hasAnyRole("ADMIN", "USER")

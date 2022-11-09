@@ -22,4 +22,9 @@ public interface RequestRepository extends PagingAndSortingRepository<Request, L
 
     List<Request> findByNameAndPrice(@Param("name") String Name, BigDecimal price);
     List<Request> findByNameAndPriceAndDescription(@Param("name") String name, BigDecimal price, String description);
+
+    void deleteRequestByNameAndPriceAndDescriptionAndRequester(@Param("attributes") String name, BigDecimal price, String description, User requester);
+
+    void deleteByRequester(@Param("requester") User requester);
+
 }

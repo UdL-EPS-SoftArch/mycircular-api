@@ -160,9 +160,11 @@ public class RegisterRequestStepDefs {
             requester.setUsername(requesterName);
             requester.setPassword("password");
             requester.setEmail(requesterName + "@gmail.com");
+            userRepository.save(requester);
         }
 
         request.setRequester(requester);
+
 
         stepDefs.result = stepDefs.mockMvc.perform(
                         post("/requests")

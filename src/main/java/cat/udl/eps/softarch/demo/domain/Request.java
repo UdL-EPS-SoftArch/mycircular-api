@@ -22,7 +22,7 @@ public class Request extends Announcement{
     private ZonedDateTime dateTime;
 
 //    @NotEmpty
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JsonIdentityReference(alwaysAsId = true)
     private User requester;
 }

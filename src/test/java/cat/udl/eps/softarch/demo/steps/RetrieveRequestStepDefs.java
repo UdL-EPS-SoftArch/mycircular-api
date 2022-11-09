@@ -75,7 +75,7 @@ public class RetrieveRequestStepDefs {
         throw new NotFoundException();
     }
 
-    @And("I see {int} requests from {string}")
+    @And("I see {int} request(s) from {string}")
     public void iSeeRequestsFrom(int numRequests, String username) throws Exception {
 
         ResultActions userPetitionResult = stepDefs.result;
@@ -88,6 +88,8 @@ public class RetrieveRequestStepDefs {
         } else {
             user = getOtherUser(username);
         }
+
+        userPetitionResult.andDo(print());
 
         userPetitionResult.andExpect(jsonPath("$[0].requester").value("/users/" + user.getUsername()));
 
@@ -114,8 +116,14 @@ public class RetrieveRequestStepDefs {
 
     @And("I can't see any request")
     public void iCanTSeeAnyRequest() throws Exception {
-        stepDefs.result.andExpect(jsonPath("$").doesNotExist());
+        //stepDefs.result.andDo(print());
+        stepDefs.result.andExpect(jsonPath("$").isEmpty());
+       // stepDefs.result.andExpect(jsonPath("$").doesNotExist());
     }
 
 
+    @And("I'm not allowed to see any request")
+    public void iMNotAllowedToSeeAnyRequest() throws Exception {
+        stepDefs.result.andExpect(jsonPath("$").doesNotExist());
+    }
 }
