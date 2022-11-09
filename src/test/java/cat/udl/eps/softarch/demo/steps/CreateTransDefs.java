@@ -3,6 +3,7 @@ package cat.udl.eps.softarch.demo.steps;
 import static org.hamcrest.Matchers.is;
 
 import cat.udl.eps.softarch.demo.domain.Transaction;
+import cat.udl.eps.softarch.demo.repository.AnnouncementRepository;
 import cat.udl.eps.softarch.demo.repository.TransactionRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
@@ -30,8 +31,12 @@ public class CreateTransDefs {
     private TransactionRepository transactionRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AnnouncementRepository announcementRepository;
     @Autowired
     private StepDefs stepDefs;
+
 
 
     @When("^I Create a new Transaction with price ([\\d-.]+)$")
@@ -71,12 +76,13 @@ public class CreateTransDefs {
                 .andDo(print());
     }
 
-    @Given("I Create a new Transaction with price {string}, the buyer is {string} and the seller is {string}")
-    public void iCreateANewTransactionWithPriceAndTheBuyerIs(String price, String buyer, String seller) throws Exception {
+    @Given("I Create a new Transaction with price {string}, the buyer is {string}, the seller is {string} and announcement id is {int}")
+    public void iCreateANewTransactionWithPriceAndTheBuyerIs(String price, String buyer, String seller, int announcementId) throws Exception {
         Transaction transaction = new Transaction();
         transaction.setPrice(new BigDecimal(price));
         transaction.setBuyer(userRepository.findByUsernameContaining(buyer).get(0));
         transaction.setSeller(userRepository.findByUsernameContaining(seller).get(0));
+        transaction.setAnnouncementAbout(announcementRepository.findById(announcementId).get(0));
         stepDefs.result = stepDefs.mockMvc.perform(
                         post("/transactions")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -87,5 +93,6 @@ public class CreateTransDefs {
                                 .with(AuthenticationStepDefs.authenticate()))
                 .andDo(print());
         newResourceUri = stepDefs.result.andReturn().getResponse().getHeader("Location");
+        System.out.println(newResourceUri);
     }
 }
