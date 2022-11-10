@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.DecimalMin;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
@@ -25,7 +26,7 @@ public class Announcement extends UriEntity<Long> {
     @Length(min = 2, max = 24)
     private String name;
 
-//    @NotEmpty si no es string caca
+    @NotNull
     @DecimalMin(value = "0")
     private BigDecimal price;
 

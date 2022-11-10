@@ -30,7 +30,26 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
                     .antMatchers(HttpMethod.GET, "/identity").authenticated()
                     .antMatchers(HttpMethod.POST, "/users").anonymous()
                     .antMatchers(HttpMethod.POST, "/users/*").denyAll()
-                    .antMatchers(HttpMethod.POST, "/**/*").authenticated()
+
+                    .antMatchers(HttpMethod.POST, "/requests").authenticated() //aqui
+                    .antMatchers(HttpMethod.POST, "/servRequests").authenticated()
+                    .antMatchers(HttpMethod.POST, "/prodRequests").authenticated()
+                    .antMatchers(HttpMethod.POST, "/offers/*").authenticated()
+                    .antMatchers(HttpMethod.POST, "/productOffers/*").authenticated()
+                    .antMatchers(HttpMethod.POST, "/serviceOffers/*").authenticated()
+                    .antMatchers(HttpMethod.DELETE, "/requests").authenticated()
+                    .antMatchers(HttpMethod.DELETE, "/prodRequests").authenticated()
+                    .antMatchers(HttpMethod.DELETE, "/servRequests").authenticated()
+
+                    .antMatchers(HttpMethod.POST, "/reviews").hasRole("USER")
+                    .antMatchers(HttpMethod.PATCH, "/reviews/*").hasRole("USER")
+                    .antMatchers(HttpMethod.DELETE, "/reviews/*").hasAnyRole("ADMIN", "USER")
+                    .antMatchers(HttpMethod.POST, "/messages").authenticated()
+                    .antMatchers(HttpMethod.PATCH, "/messages/*").authenticated()
+                    .antMatchers(HttpMethod.POST, "/announcements/*").authenticated()
+                    .antMatchers(HttpMethod.POST, "/offers/*").authenticated()
+                    .antMatchers(HttpMethod.POST, "/productOffers/*").authenticated()
+                    .antMatchers(HttpMethod.POST, "/serviceOffers/*").authenticated()
                     .antMatchers(HttpMethod.PUT, "/**/*").authenticated()
                     .antMatchers(HttpMethod.PATCH, "/**/*").authenticated()
                     .antMatchers(HttpMethod.DELETE, "/**/*").authenticated()
@@ -60,5 +79,3 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
             return new SecurityEvaluationContextExtension();
         }
     }
-
-

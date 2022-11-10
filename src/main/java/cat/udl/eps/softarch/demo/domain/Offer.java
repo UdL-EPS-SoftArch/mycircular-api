@@ -1,14 +1,9 @@
 package cat.udl.eps.softarch.demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -21,9 +16,8 @@ public class Offer extends Announcement {
 
     private ZonedDateTime dateTime;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JsonIdentityReference(alwaysAsId = true)
-    private User offererUser;
-
+    private User offerer;
 
 }

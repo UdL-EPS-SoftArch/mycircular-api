@@ -126,7 +126,8 @@ public class RegisterRequestStepDefs {
         offerer.setUsername(offererName);
         offerer.setPassword("password");
         offerer.setEmail(offererName + "@gmail.com");
-        offer.setOffererUser(offerer);
+        offer.setOfferer(offerer);
+        userRepository.save(offerer);
 
         offerRepository.save(offer);
         Assert.assertEquals(1, offerRepository.count());
@@ -159,9 +160,11 @@ public class RegisterRequestStepDefs {
             requester.setUsername(requesterName);
             requester.setPassword("password");
             requester.setEmail(requesterName + "@gmail.com");
+            userRepository.save(requester);
         }
 
         request.setRequester(requester);
+
 
         stepDefs.result = stepDefs.mockMvc.perform(
                         post("/requests")
