@@ -164,4 +164,21 @@ public class UpdateRequestStepDefs {
                         .with(AuthenticationStepDefs.authenticate())
         ).andDo(print());
     }
+
+    @When("I modify a request with name {string}, price {int}, description {string} by {string} with new price {int} \\(put)")
+    public void iModifyARequestWithNamePriceDescriptionByWithNewPricePut(String name, int price, String description, String username, int newPrice) {
+        try {
+            Long requestId = getRequestByParams(name, price, description, username).getId();
+            System.out.println("AYUDAAAAA " + requestId);
+            stepDefs.result = stepDefs.mockMvc.perform(
+                    patch("/requests/{id}", requestId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content((new JSONObject().put("price", new BigDecimal(newPrice))).toString())
+                            .accept(MediaType.APPLICATION_JSON)
+                            .with(AuthenticationStepDefs.authenticate())
+            ).andDo(print());
+        } catch (Exception Nf) {
+            e = Nf;
+        }
+    }
 }
