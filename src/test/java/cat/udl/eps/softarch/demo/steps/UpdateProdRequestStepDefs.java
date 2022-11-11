@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 public class UpdateProdRequestStepDefs {
@@ -126,5 +127,22 @@ public class UpdateProdRequestStepDefs {
     @Then("The product request to modify is not found")
     public void theProductRequestToModifyIsNotFound() {
         Assertions.assertEquals(NotFoundException.class, e.getClass());
+    }
+
+
+    @When("I modify my own created product requests with price {int} \\(put)")
+    public void iModifyMyOwnCreatedProductRequestsWithPricePut(int newPrice) throws Exception {
+        String currentUser = getCurrentUsername();
+        List<Request> myRequests = prodRequestRepository.findByRequester(getUser(currentUser));
+        Request modifiedRequest = myRequests.get(0);
+        Long requestId = modifiedRequest.getId();
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                put("/prodRequests/{id}", requestId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content((new JSONObject().put("price", new BigDecimal(newPrice))).toString())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(AuthenticationStepDefs.authenticate())
+        ).andDo(print());
     }
 }
