@@ -3,12 +3,10 @@ package cat.udl.eps.softarch.demo.steps;
 import cat.udl.eps.softarch.demo.domain.Request;
 import cat.udl.eps.softarch.demo.domain.User;
 import cat.udl.eps.softarch.demo.exception.NotFoundException;
-import cat.udl.eps.softarch.demo.repository.ProdRequestRepository;
 import cat.udl.eps.softarch.demo.repository.ServRequestRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -151,5 +149,21 @@ public class UpdateServRequestStepDefs {
                         .accept(MediaType.APPLICATION_JSON)
                         .with(AuthenticationStepDefs.authenticate())
         ).andDo(print());
+    }
+
+    @When("I modify a service request with name {string}, price {int}, description {string} by {string} with new price {int} \\(put)")
+    public void iModifyAServiceRequestWithNamePriceDescriptionByWithNewPricePut(String name, int price, String description, String username, int newPrice) {
+        try {
+            Long requestId = getRequestByParams(name, price, description, username).getId();
+            stepDefs.result = stepDefs.mockMvc.perform(
+                    put("/servRequests/{id}", requestId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content((new JSONObject().put("price", new BigDecimal(newPrice))).toString())
+                            .accept(MediaType.APPLICATION_JSON)
+                            .with(AuthenticationStepDefs.authenticate())
+            ).andDo(print());
+        } catch (Exception Nf) {
+            e = Nf;
+        }
     }
 }
