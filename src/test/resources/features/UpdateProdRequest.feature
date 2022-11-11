@@ -24,3 +24,7 @@ Feature: Update Request
     Then The response code is 403
     When I retrieve my own created product requests
     Then The price of "nene"'s product request I tried to change is not 300
+
+  Scenario: Modify product request that doesn't exist (patch)
+    When I modify a product request with name "request inventada", price 37, description "fake request" by "user" with new price 300
+    Then The product request to modify is not found

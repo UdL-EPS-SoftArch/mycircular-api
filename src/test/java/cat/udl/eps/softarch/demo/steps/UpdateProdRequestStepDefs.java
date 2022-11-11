@@ -12,6 +12,7 @@ import io.cucumber.java.en.When;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
@@ -79,7 +80,7 @@ public class UpdateProdRequestStepDefs {
         Long requestId = modifiedRequest.getId();
 
         stepDefs.result = stepDefs.mockMvc.perform(
-                patch("/requests/{id}", requestId)
+                patch("/prodRequests/{id}", requestId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content((new JSONObject().put("price", new BigDecimal(newPrice))).toString())
                         .accept(MediaType.APPLICATION_JSON)
@@ -92,5 +93,38 @@ public class UpdateProdRequestStepDefs {
         List<Request> othersRequests = prodRequestRepository.findByRequester(getUser(othersUsername));
         BigDecimal unexpectedPrice = new BigDecimal(newPrice);
         Assert.assertNotEquals(unexpectedPrice, othersRequests.get(0).getPrice());
+    }
+
+    @When("I modify a product request with name {string}, price {int}, description {string} by {string} with new price {int}")
+    public void iModifyAProductRequestWithNamePriceDescriptionByWithNewPrice(String name, int price, String description, String username, int newPrice) {
+        try {
+            Long requestId = getRequestByParams(name, price, description, username).getId();
+            System.out.println("AYUDAAAAA " + requestId);
+            stepDefs.result = stepDefs.mockMvc.perform(
+                    patch("/prodRequests/{id}", requestId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content((new JSONObject().put("price", new BigDecimal(newPrice))).toString())
+                            .accept(MediaType.APPLICATION_JSON)
+                            .with(AuthenticationStepDefs.authenticate())
+            ).andDo(print());
+        } catch (Exception Nf) {
+            e = Nf;
+        }
+    }
+    private Request getRequestByParams(String name, int price, String description, String username) {
+        BigDecimal requestPrice = new BigDecimal(price);
+        User requester = getUser(username);
+
+        List<Request> requestList = prodRequestRepository.findByNameAndPriceAndDescriptionAndRequester(name, requestPrice, description, requester);
+        if (requestList.isEmpty()) {
+            throw new NotFoundException();
+        }
+        return requestList.get(0);
+
+    }
+
+    @Then("The product request to modify is not found")
+    public void theProductRequestToModifyIsNotFound() {
+        Assertions.assertEquals(NotFoundException.class, e.getClass());
     }
 }
