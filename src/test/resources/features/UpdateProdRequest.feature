@@ -39,3 +39,9 @@ Feature: Update Request
     Then The response code is 403
     When I retrieve my own created product requests
     Then The price of my product request I tried to change is not 300
+
+  Scenario: Modify other's user request (put)
+    When I modify "nene"'s product requests with price 300 (put)
+    Then The response code is 403
+    When I retrieve my own created product requests
+    Then The price of "nene"'s product request I tried to change is not 300

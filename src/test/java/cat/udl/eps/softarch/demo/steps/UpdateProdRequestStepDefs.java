@@ -145,4 +145,21 @@ public class UpdateProdRequestStepDefs {
                         .with(AuthenticationStepDefs.authenticate())
         ).andDo(print());
     }
+
+    @When("I modify {string}'s product requests with price {int} \\(put)")
+    public void iModifySProductRequestsWithPricePut(String othersUsername, int newPrice) throws Exception {
+        List<Request> othersRequests = prodRequestRepository.findByRequester(getUser(othersUsername));
+        Request modifiedRequest = othersRequests.get(0);
+        Long requestId = modifiedRequest.getId();
+
+        //System.out.println(modifiedRequest);
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                put("/prodRequests/{id}", requestId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content((new JSONObject().put("price", new BigDecimal(newPrice))).toString())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(AuthenticationStepDefs.authenticate())
+        ).andDo(print());
+    }
 }
