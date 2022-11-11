@@ -157,7 +157,7 @@ public class UpdateRequestStepDefs {
         //System.out.println(modifiedRequest);
 
         stepDefs.result = stepDefs.mockMvc.perform(
-                patch("/requests/{id}", requestId)
+                put("/requests/{id}", requestId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content((new JSONObject().put("price", new BigDecimal(newPrice))).toString())
                         .accept(MediaType.APPLICATION_JSON)
@@ -171,7 +171,7 @@ public class UpdateRequestStepDefs {
             Long requestId = getRequestByParams(name, price, description, username).getId();
             System.out.println("AYUDAAAAA " + requestId);
             stepDefs.result = stepDefs.mockMvc.perform(
-                    patch("/requests/{id}", requestId)
+                    put("/requests/{id}", requestId)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content((new JSONObject().put("price", new BigDecimal(newPrice))).toString())
                             .accept(MediaType.APPLICATION_JSON)
