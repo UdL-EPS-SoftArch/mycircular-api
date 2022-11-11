@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 public class UpdateServRequestStepDefs {
@@ -93,7 +94,7 @@ public class UpdateServRequestStepDefs {
         try {
             Long requestId = getRequestByParams(name, price, description, username).getId();
             stepDefs.result = stepDefs.mockMvc.perform(
-                    patch("/prodRequests/{id}", requestId)
+                    patch("/servRequests/{id}", requestId)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content((new JSONObject().put("price", new BigDecimal(newPrice))).toString())
                             .accept(MediaType.APPLICATION_JSON)
@@ -119,5 +120,36 @@ public class UpdateServRequestStepDefs {
     @Then("The service request to modify is not found")
     public void theServiceRequestToModifyIsNotFound() {
         Assertions.assertEquals(NotFoundException.class, e.getClass());
+    }
+
+    @When("I modify my own created service requests with price {int} \\(put)")
+    public void iModifyMyOwnCreatedServiceRequestsWithPricePut(int newPrice) throws Exception {
+        String currentUser = getCurrentUsername();
+        List<Request> myRequests = servRequestRepository.findByRequester(getUser(currentUser));
+        Request modifiedRequest = myRequests.get(0);
+        Long requestId = modifiedRequest.getId();
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                put("/servRequests/{id}", requestId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content((new JSONObject().put("price", new BigDecimal(newPrice))).toString())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(AuthenticationStepDefs.authenticate())
+        ).andDo(print());
+    }
+
+    @When("I modify {string}'s service requests with price {int} \\(put)")
+    public void iModifySServiceRequestsWithPricePut(String othersUsername, int newPrice) throws Exception {
+        List<Request> othersRequests = servRequestRepository.findByRequester(getUser(othersUsername));
+        Request modifiedRequest = othersRequests.get(0);
+        Long requestId = modifiedRequest.getId();
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                put("/servRequests/{id}", requestId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content((new JSONObject().put("price", new BigDecimal(newPrice))).toString())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(AuthenticationStepDefs.authenticate())
+        ).andDo(print());
     }
 }
