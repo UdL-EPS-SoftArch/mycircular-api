@@ -1,4 +1,4 @@
-Feature: Update Request
+Feature: Update Product Request
   In order to use the app
   As a user
   I want to update requests
@@ -49,3 +49,8 @@ Feature: Update Request
   Scenario: Modify product request that doesn't exist (put)
     When I modify a product request with name "request inventada", price 37, description "fake request" by "user" with new price 300 (put)
     Then The product request to modify is not found
+
+  Scenario: Modify product request being not logged in (put)
+    Given I'm not logged in
+    When I modify a product request with name "croqueta2", price 100, description "le hago la competencia a la mama" by "user" with new price 300 (put)
+    Then The response code is 401
