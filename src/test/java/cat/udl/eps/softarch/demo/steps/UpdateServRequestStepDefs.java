@@ -64,4 +64,26 @@ public class UpdateServRequestStepDefs {
         BigDecimal unexpectedPrice = new BigDecimal(newPrice);
         Assert.assertNotEquals(unexpectedPrice, myRequests.get(0).getPrice());
     }
+
+    @When("I modify {string}'s service requests with price {int}")
+    public void iModifySServiceRequestsWithPrice(String othersUsername, int newPrice) throws Exception {
+        List<Request> othersRequests = servRequestRepository.findByRequester(getUser(othersUsername));
+        Request modifiedRequest = othersRequests.get(0);
+        Long requestId = modifiedRequest.getId();
+
+        stepDefs.result = stepDefs.mockMvc.perform(
+                patch("/servRequests/{id}", requestId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content((new JSONObject().put("price", new BigDecimal(newPrice))).toString())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(AuthenticationStepDefs.authenticate())
+        ).andDo(print());
+    }
+
+    @Then("The price of {string}'s service request I tried to change is not {int}")
+    public void thePriceOfSServiceRequestITriedToChangeIsNot(String othersUsername, int newPrice) {
+        List<Request> othersRequests = servRequestRepository.findByRequester(getUser(othersUsername));
+        BigDecimal unexpectedPrice = new BigDecimal(newPrice);
+        Assert.assertNotEquals(unexpectedPrice, othersRequests.get(0).getPrice());
+    }
 }
