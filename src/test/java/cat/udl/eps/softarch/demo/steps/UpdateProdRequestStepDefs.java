@@ -31,8 +31,6 @@ public class UpdateProdRequestStepDefs {
     @Autowired
     private ProdRequestRepository prodRequestRepository;
     @Autowired
-    private OfferRepository offerRepository;
-    @Autowired
     private UserRepository userRepository;
     private Exception e;
 
@@ -42,8 +40,6 @@ public class UpdateProdRequestStepDefs {
         List<Request> myRequests = prodRequestRepository.findByRequester(getUser(currentUser));
         Request modifiedRequest = myRequests.get(0);
         Long requestId = modifiedRequest.getId();
-
-        //System.out.println(modifiedRequest);
 
         stepDefs.result = stepDefs.mockMvc.perform(
                 patch("/prodRequests/{id}", requestId)
@@ -100,7 +96,6 @@ public class UpdateProdRequestStepDefs {
     public void iModifyAProductRequestWithNamePriceDescriptionByWithNewPrice(String name, int price, String description, String username, int newPrice) {
         try {
             Long requestId = getRequestByParams(name, price, description, username).getId();
-            System.out.println("AYUDAAAAA " + requestId);
             stepDefs.result = stepDefs.mockMvc.perform(
                     patch("/prodRequests/{id}", requestId)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -161,5 +156,21 @@ public class UpdateProdRequestStepDefs {
                         .accept(MediaType.APPLICATION_JSON)
                         .with(AuthenticationStepDefs.authenticate())
         ).andDo(print());
+    }
+
+    @When("I modify a product request with name {string}, price {int}, description {string} by {string} with new price {int} \\(put)")
+    public void iModifyAProductRequestWithNamePriceDescriptionByWithNewPricePut(String name, int price, String description, String username, int newPrice) {
+        try {
+            Long requestId = getRequestByParams(name, price, description, username).getId();
+            stepDefs.result = stepDefs.mockMvc.perform(
+                    put("/prodRequests/{id}", requestId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content((new JSONObject().put("price", new BigDecimal(newPrice))).toString())
+                            .accept(MediaType.APPLICATION_JSON)
+                            .with(AuthenticationStepDefs.authenticate())
+            ).andDo(print());
+        } catch (Exception Nf) {
+            e = Nf;
+        }
     }
 }

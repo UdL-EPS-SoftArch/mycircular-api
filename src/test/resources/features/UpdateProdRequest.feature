@@ -29,19 +29,23 @@ Feature: Update Request
     When I modify a product request with name "request inventada", price 37, description "fake request" by "user" with new price 300
     Then The product request to modify is not found
 
-  Scenario: Modify request being not logged in (patch)
+  Scenario: Modify product request being not logged in (patch)
     Given I'm not logged in
     When I modify a product request with name "croqueta2", price 100, description "le hago la competencia a la mama" by "user" with new price 300
     Then The response code is 401
 
-  Scenario: Modify own request (put)
+  Scenario: Modify own product request (put)
     When I modify my own created product requests with price 300 (put)
     Then The response code is 403
     When I retrieve my own created product requests
     Then The price of my product request I tried to change is not 300
 
-  Scenario: Modify other's user request (put)
+  Scenario: Modify other's user product request (put)
     When I modify "nene"'s product requests with price 300 (put)
     Then The response code is 403
     When I retrieve my own created product requests
     Then The price of "nene"'s product request I tried to change is not 300
+
+  Scenario: Modify product request that doesn't exist (put)
+    When I modify a product request with name "request inventada", price 37, description "fake request" by "user" with new price 300 (put)
+    Then The product request to modify is not found
