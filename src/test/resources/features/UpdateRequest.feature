@@ -53,5 +53,5 @@ Feature: Update Request
 
   Scenario: Modify request being not logged in (put)
     Given I'm not logged in
-    When I modify a request with name "croqueta2", price 100, description "le hago la competencia a la mama" by "user" with new price 300
+    When I modify a request with name "croqueta2", price 100, description "le hago la competencia a la mama" by "user" with new price 300 (put)
     Then The response code is 401
