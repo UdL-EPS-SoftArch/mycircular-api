@@ -30,8 +30,6 @@ public class UpdateRequestStepDefs {
     @Autowired
     private RequestRepository requestRepository;
     @Autowired
-    private OfferRepository offerRepository;
-    @Autowired
     private UserRepository userRepository;
     private Exception e;
     @When("I modify my own created requests with price {int}")
@@ -40,8 +38,6 @@ public class UpdateRequestStepDefs {
         List<Request> myRequests = requestRepository.findByRequester(getUser(currentUser));
         Request modifiedRequest = myRequests.get(0);
         Long requestId = modifiedRequest.getId();
-
-        //System.out.println(modifiedRequest);
 
         stepDefs.result = stepDefs.mockMvc.perform(
                 patch("/requests/{id}", requestId)
@@ -69,8 +65,6 @@ public class UpdateRequestStepDefs {
         Request modifiedRequest = othersRequests.get(0);
         Long requestId = modifiedRequest.getId();
 
-        //System.out.println(modifiedRequest);
-
         stepDefs.result = stepDefs.mockMvc.perform(
                 patch("/requests/{id}", requestId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -85,7 +79,6 @@ public class UpdateRequestStepDefs {
         String currentUser = getCurrentUsername();
         List<Request> myRequests = requestRepository.findByRequester(getUser(currentUser));
         BigDecimal unexpectedPrice = new BigDecimal(newPrice);
-        //System.out.println(myRequests.get(0));
         Assert.assertNotEquals(unexpectedPrice, myRequests.get(0).getPrice());
     }
 
@@ -137,8 +130,6 @@ public class UpdateRequestStepDefs {
         Request modifiedRequest = myRequests.get(0);
         Long requestId = modifiedRequest.getId();
 
-        //System.out.println(modifiedRequest);
-
         stepDefs.result = stepDefs.mockMvc.perform(
                 put("/requests/{id}", requestId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -153,8 +144,6 @@ public class UpdateRequestStepDefs {
         List<Request> othersRequests = requestRepository.findByRequester(getUser(othersUsername));
         Request modifiedRequest = othersRequests.get(0);
         Long requestId = modifiedRequest.getId();
-
-        //System.out.println(modifiedRequest);
 
         stepDefs.result = stepDefs.mockMvc.perform(
                 put("/requests/{id}", requestId)

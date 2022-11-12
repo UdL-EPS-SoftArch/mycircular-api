@@ -37,25 +37,6 @@ public class RequestEventHandler {
         if(requests.isPresent()){
             throw new ForbiddenException();
         }
-
-        /* ESTO NO SIRVE PARA NADA PERO LO DEJO PARA VER LA MIERDA QUE IMPLEMENTO SARA CUANDO IBA DE EXTASIS HASTA ARRIBA
-        System.out.println("AQUIII" + requests.isPresent());
-        if(requests.isPresent()){
-            Request oldRequest = requests.get();
-            System.out.println("ANTIGUA " + oldRequest);
-            // Aqui el precio ya lo ha cambiado wtf
-            System.out.println("PRECIO DE LA ANTIGUA " + oldRequest.getPrice());
-            System.out.println("NUEVA " + newRequest);
-            System.out.println("PRECIO DE LA NUEVA " + newRequest.getPrice());
-        }
-
-        if(requests.isPresent()){
-            Request oldRequest = requests.get();
-            if(differentAtts(oldRequest, newRequest)) {
-                throw new ForbiddenException();
-            }
-        }
-         */
     }
 
     //TODO: si no funciona, deberíamos redefinir el equals. Supuestamente String ya tiene uno que funciona, y BigDecimal tambien. El poblemo es comparar users.
