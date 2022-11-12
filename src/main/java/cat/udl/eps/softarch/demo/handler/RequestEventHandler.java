@@ -35,10 +35,7 @@ public class RequestEventHandler {
         Optional<Request> requests = requestRepository.findById(newRequest.getId());
 
         if(requests.isPresent()){
-            Request oldRequest = requests.get();
-            if(differentAtts(oldRequest, newRequest)) {
-                throw new ForbiddenException();
-            }
+            throw new ForbiddenException();
         }
     }
 

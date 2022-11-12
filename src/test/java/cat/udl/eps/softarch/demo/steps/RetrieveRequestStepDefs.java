@@ -7,11 +7,13 @@ import cat.udl.eps.softarch.demo.repository.RequestRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +32,8 @@ public class RetrieveRequestStepDefs {
 
     @Autowired
     private StepDefs stepDefs;
+
+    private Exception e;
 
 
 
@@ -95,15 +99,19 @@ public class RetrieveRequestStepDefs {
     @When("I retrieve requests from user {string}")
     public void iRetrieveRequestsFromUser(String otherUsername) throws Exception {
 
-        stepDefs.result = stepDefs.mockMvc.perform(
+        try {
+            stepDefs.result = stepDefs.mockMvc.perform(
 
-                get("/requests", otherUsername)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .with(AuthenticationStepDefs.authenticate())
-                        .queryParam("username", otherUsername)
+                    get("/requests", otherUsername)
+                            .accept(MediaType.APPLICATION_JSON)
+                            .with(AuthenticationStepDefs.authenticate())
+                            .queryParam("username", otherUsername)
 
-        ).andDo(print())
-        ;
+            ).andDo(print())
+            ;
+        } catch (NotFoundException Nf) {
+            e = Nf;
+        }
 
     }
 
@@ -116,5 +124,18 @@ public class RetrieveRequestStepDefs {
     @And("I'm not allowed to see any request")
     public void iMNotAllowedToSeeAnyRequest() throws Exception {
         stepDefs.result.andExpect(jsonPath("$").doesNotExist());
+    }
+
+    @When("I retrieve a request with name {string}, price {int}, description {string} by {string}")
+    public void iRetrieveARequestWithNamePriceDescriptionBy(String name, int price, String description, String username) {
+        List<Request> requestList = requestRepository.findByNameAndPriceAndDescriptionAndRequester(name, new BigDecimal(price), description, getOtherUser(username));
+        if(requestList.isEmpty()) {
+            e = new NotFoundException();
+        }
+    }
+
+    @And("The retrieved request is not found")
+    public void theRetrievedRequestIsNotFound() {
+        Assert.assertEquals(NotFoundException.class, e.getClass());
     }
 }
