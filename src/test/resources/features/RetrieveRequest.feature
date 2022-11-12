@@ -34,14 +34,25 @@ Feature: Retrieve a Request
     Given I'm not logged in
     When I retrieve my own created requests
     Then The response code is 401
-    #And I can't see any request
     And I'm not allowed to see any request
 
   Scenario: Retrieve other user's requests but user is not logged in
     Given I'm not logged in
     When I retrieve requests from user "Antonio"
     Then The response code is 401
-    #And I can't see any request
     And I'm not allowed to see any request
+
+  #Scenario: Retrieve a request that doesn't exist
+    #When I retrieve a request with name "alicates", price 53, description "los mejores alicates del papa" by "user"
+    #Then The response code is 404
+    #And The retrieved request is not found
+    #And I can't see any request
+
+  #Scenario: Retrieve a request from a non existing user
+   # When I retrieve requests from user "Mondongo"
+    #Then The response code is 404
+    #And The retrieved request is not found
+   # And I can't see any request
+
 
 
