@@ -7,16 +7,18 @@ import cat.udl.eps.softarch.demo.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import javax.annotation.PostConstruct;
 
 @Configuration
+@Profile("test")
 public class BBDDInitialization {
     @Value("{default-password}")
     String defaultPassword;
 
-    final UserRepository userRepository;
-    final ReviewRepository reviewRepository;
+    private UserRepository userRepository;
+    private ReviewRepository reviewRepository;
 
     public BBDDInitialization(ReviewRepository reviewRepository, UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -25,25 +27,39 @@ public class BBDDInitialization {
 
     @PostConstruct
     public void initializeDatabase() {
-        User user1 = new User();
-        user1.setUsername("user0");
-        user1.setEmail("user0@sample.com");
-        user1.setPassword("12345678");
-        user1.encodePassword();
-        userRepository.save(user1);
 
-        User user2 = new User();
-        user2.setUsername("user0");
-        user2.setEmail("user0@sample.com");
-        user2.setPassword("12345678");
-        user2.encodePassword();
-        userRepository.save(user2);
+        //Users
+        User user = this.userRepository.findById("demo").orElse(new User());
+        if (user.getId() == null) {
+            user.setEmail("demo@sample.com");
+            user.setUsername("demo");
+            user.setPassword(defaultPassword);
+            user.encodePassword();
+            userRepository.save(user);
+        }
 
-        Review review1 = new Review();
-        review1.setAuthor(user1);
-        review1.setAbout(user2);
-        review1.setStars(5);
-        review1.setMessage("Great!");
-        reviewRepository.save(review1);
+        User user2 = this.userRepository.findById("demo2").orElse(new User());
+        if (user2.getId() == null) {
+            user2.setEmail("demo2@sample.com");
+            user2.setUsername("demo2");
+            user2.setPassword(defaultPassword);
+            user2.encodePassword();
+            userRepository.save(user2);
+        }
+
+        //Reviews
+        Review review = new Review();
+        review.setAuthor(user);
+        review.setAbout(user2);
+        review.setStars(5);
+        review.setMessage("Great!");
+        reviewRepository.save(review);
+
+        Review review2 = new Review();
+        review2.setAuthor(user2);
+        review2.setAbout(user);
+        review2.setStars(4);
+        review2.setMessage("Very good!");
+        reviewRepository.save(review2);
     }
 }
