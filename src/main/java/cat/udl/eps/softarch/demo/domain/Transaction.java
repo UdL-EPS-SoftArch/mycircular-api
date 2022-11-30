@@ -14,9 +14,10 @@ import java.time.ZonedDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class Transaction extends UriEntity<Long> {
 
-    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
     private Long id;
+
     private ZonedDateTime creationDate;
 
     private BigDecimal price;
