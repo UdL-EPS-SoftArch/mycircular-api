@@ -28,7 +28,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
                     .and()
                     .authorizeRequests()
                     .antMatchers(HttpMethod.GET, "/identity").authenticated()
+
+
                     .antMatchers(HttpMethod.GET, "/transactions").hasAuthority("ROLE_ADMIN")
+                    .antMatchers(HttpMethod.GET, "/transactions/").hasAuthority("ROLE_ADMIN")
+                    .antMatchers(HttpMethod.GET, "/transactions/*").authenticated()
+
+
                     .antMatchers(HttpMethod.POST, "/users").anonymous()
                     .antMatchers(HttpMethod.POST, "/users/*").denyAll()
                     .antMatchers(HttpMethod.POST, "/reviews").hasRole("USER")

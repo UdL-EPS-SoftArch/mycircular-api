@@ -2,6 +2,8 @@ package cat.udl.eps.softarch.demo.repository;
 
 import cat.udl.eps.softarch.demo.domain.Transaction;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
@@ -18,6 +20,5 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     @PostFilter("filterObject.seller.username == authentication.principal.username")
     List<Transaction> findBySeller_Username(@Param("username") String username);
 
-    @PostFilter("filterObject.buyer.username == authentication.principal.username or filterObject.seller.username == authentication.principal.username")
-    List<Transaction> findByBuyer_UsernameOrSeller_Username(@Param("buyerUsername") String username, @Param("sellerUsername") String username2);
+    Page<Transaction> findByBuyer_UsernameOrSeller_Username(@Param("buyerUsername") String username, @Param("sellerUsername") String username2, Pageable p);
 }
