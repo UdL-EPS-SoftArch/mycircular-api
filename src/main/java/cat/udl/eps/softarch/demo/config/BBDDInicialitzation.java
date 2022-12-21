@@ -24,5 +24,6 @@ public class BBDDInicialitzation {
         ann.setDescription("blablablablablablabla");
         ann.setPrice(BigDecimal.TEN);
         ann = announcementRepository.save(ann);
+
     }
 }
