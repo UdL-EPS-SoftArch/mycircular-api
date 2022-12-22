@@ -1,4 +1,7 @@
-allowed-origins: https://angular-template.fly.dev
+allowed-origins: https://mycircular.netlify.app
+
+server:
+  forward-headers-strategy: NATIVE
 
 logging:
     level:
