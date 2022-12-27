@@ -1,7 +1,9 @@
 package cat.udl.eps.softarch.demo.config;
 
+import cat.udl.eps.softarch.demo.domain.Admin;
 import cat.udl.eps.softarch.demo.domain.Review;
 import cat.udl.eps.softarch.demo.domain.User;
+import cat.udl.eps.softarch.demo.repository.AdminRepository;
 import cat.udl.eps.softarch.demo.repository.ReviewRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 
@@ -19,10 +21,12 @@ public class BBDDInitialization {
 
     private UserRepository userRepository;
     private ReviewRepository reviewRepository;
+    private AdminRepository adminRepository;
 
-    public BBDDInitialization(ReviewRepository reviewRepository, UserRepository userRepository) {
+    public BBDDInitialization(ReviewRepository reviewRepository, UserRepository userRepository, AdminRepository adminRepository) {
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
+        this.adminRepository = adminRepository;
     }
 
     @PostConstruct
@@ -34,7 +38,7 @@ public class BBDDInitialization {
             user.setEmail("demo@sample.com");
             user.setUsername("demo");
             user.setPassword(defaultPassword);
-            user.encodePassword();
+            //user.encodePassword();
             userRepository.save(user);
         }
 
@@ -43,7 +47,7 @@ public class BBDDInitialization {
             user2.setEmail("demo2@sample.com");
             user2.setUsername("demo2");
             user2.setPassword(defaultPassword);
-            user2.encodePassword();
+            //user2.encodePassword();
             userRepository.save(user2);
         }
 
@@ -61,5 +65,14 @@ public class BBDDInitialization {
         review2.setStars(4);
         review2.setMessage("Very good!");
         reviewRepository.save(review2);
+
+        //Admin
+        Admin admin = new Admin();
+        admin.setUsername("admin");
+        admin.setEmail("admin@admin.com");
+        admin.setPassword(defaultPassword);
+        admin.encodePassword();
+        adminRepository.save(admin);
+
     }
 }
