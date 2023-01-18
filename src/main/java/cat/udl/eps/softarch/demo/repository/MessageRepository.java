@@ -12,4 +12,5 @@ import java.util.List;
     public interface MessageRepository extends PagingAndSortingRepository<Message, Long> {
 
     List<Message> findById(@Param("id") int id);
+    List<Message> findByText(@Param("text") String text);
 }

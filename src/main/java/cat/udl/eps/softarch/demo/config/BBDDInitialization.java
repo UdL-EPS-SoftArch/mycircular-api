@@ -3,7 +3,12 @@ package cat.udl.eps.softarch.demo.config;
 import cat.udl.eps.softarch.demo.domain.Admin;
 import cat.udl.eps.softarch.demo.domain.Review;
 import cat.udl.eps.softarch.demo.domain.User;
-import cat.udl.eps.softarch.demo.repository.AdminRepository;
+
+import cat.udl.eps.softarch.demo.domain.ProductOffer;
+import cat.udl.eps.softarch.demo.domain.Review;
+import cat.udl.eps.softarch.demo.domain.User;
+import cat.udl.eps.softarch.demo.repository.AnnouncementRepository;
+import cat.udl.eps.softarch.demo.repository.ProductOfferRepository;
 import cat.udl.eps.softarch.demo.repository.ReviewRepository;
 import cat.udl.eps.softarch.demo.repository.UserRepository;
 
@@ -12,21 +17,25 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 
 @Configuration
 @Profile("test")
 public class BBDDInitialization {
-    @Value("{default-password}")
+    @Value("${default-password}")
     String defaultPassword;
 
     private UserRepository userRepository;
     private ReviewRepository reviewRepository;
-    private AdminRepository adminRepository;
+    private ProductOfferRepository productOfferRepository;
 
-    public BBDDInitialization(ReviewRepository reviewRepository, UserRepository userRepository, AdminRepository adminRepository) {
+
+
+    public BBDDInitialization(ReviewRepository reviewRepository, UserRepository userRepository,
+                              ProductOfferRepository productOfferRepository) {
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
-        this.adminRepository = adminRepository;
+        this.productOfferRepository = productOfferRepository;
     }
 
     @PostConstruct
@@ -40,6 +49,8 @@ public class BBDDInitialization {
             user.setPassword(defaultPassword);
             //user.encodePassword();
             userRepository.save(user);
+            user.encodePassword();
+            user = userRepository.save(user);
         }
 
         User user2 = this.userRepository.findById("demo2").orElse(new User());
@@ -49,6 +60,8 @@ public class BBDDInitialization {
             user2.setPassword(defaultPassword);
             //user2.encodePassword();
             userRepository.save(user2);
+            user2.encodePassword();
+            user2 = userRepository.save(user2);
         }
 
         //Reviews
@@ -66,13 +79,12 @@ public class BBDDInitialization {
         review2.setMessage("Very good!");
         reviewRepository.save(review2);
 
-        //Admin
-        Admin admin = new Admin();
-        admin.setUsername("admin");
-        admin.setEmail("admin@admin.com");
-        admin.setPassword(defaultPassword);
-        admin.encodePassword();
-        adminRepository.save(admin);
 
+        //ProductOffers
+        ProductOffer productOffer = new ProductOffer();
+        productOffer.setName("prod1");
+        productOffer.setDescription("Offer for product 1");
+        productOffer.setPrice(BigDecimal.TEN);
+        productOfferRepository.save(productOffer);
     }
 }
