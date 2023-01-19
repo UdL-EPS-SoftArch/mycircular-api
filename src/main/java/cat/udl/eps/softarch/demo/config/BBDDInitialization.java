@@ -1,5 +1,9 @@
 package cat.udl.eps.softarch.demo.config;
 
+import cat.udl.eps.softarch.demo.domain.Admin;
+import cat.udl.eps.softarch.demo.domain.Review;
+import cat.udl.eps.softarch.demo.domain.User;
+
 import cat.udl.eps.softarch.demo.domain.ProductOffer;
 import cat.udl.eps.softarch.demo.domain.Review;
 import cat.udl.eps.softarch.demo.domain.User;
@@ -25,6 +29,8 @@ public class BBDDInitialization {
     private ReviewRepository reviewRepository;
     private ProductOfferRepository productOfferRepository;
 
+
+
     public BBDDInitialization(ReviewRepository reviewRepository, UserRepository userRepository,
                               ProductOfferRepository productOfferRepository) {
         this.userRepository = userRepository;
@@ -41,6 +47,8 @@ public class BBDDInitialization {
             user.setEmail("demo@sample.com");
             user.setUsername("demo");
             user.setPassword(defaultPassword);
+            //user.encodePassword();
+            userRepository.save(user);
             user.encodePassword();
             user = userRepository.save(user);
         }
@@ -50,6 +58,8 @@ public class BBDDInitialization {
             user2.setEmail("demo2@sample.com");
             user2.setUsername("demo2");
             user2.setPassword(defaultPassword);
+            //user2.encodePassword();
+            userRepository.save(user2);
             user2.encodePassword();
             user2 = userRepository.save(user2);
         }
@@ -68,6 +78,7 @@ public class BBDDInitialization {
         review2.setStars(4);
         review2.setMessage("Very good!");
         reviewRepository.save(review2);
+
 
         //ProductOffers
         ProductOffer productOffer = new ProductOffer();
